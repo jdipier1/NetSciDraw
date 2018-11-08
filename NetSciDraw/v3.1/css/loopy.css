@@ -4,7 +4,7 @@ body{
 
 	font-family: Comic Sans MS, Comic Sans, cursive;
 	font-weight: normal;
-	font-size: 20px;
+	font-size: 18px;
 
 	overflow: hidden;
 }
@@ -141,12 +141,12 @@ div[big=yes] .play_button_label{
 #sidebar{
 	position: absolute;
 	top:0; right:0;
-	width: 300px;
+	width: 250px;
 	height: 100%;
 	background: #ADD8E6; /* put #ddd to get back to original color */
 
 	font-weight: 100;
-	font-size: 17px;
+	font-size: 15px;
 
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -226,7 +226,7 @@ div[big=yes] .play_button_label{
 }
 .component_slider_graphic{
 	position: absolute;
-	width: 250px;
+	width: 200px;
 	height: 40px;
 	cursor: pointer;
 }
