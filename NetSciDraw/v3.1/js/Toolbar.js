@@ -105,7 +105,7 @@ function ToolbarButton(toolbar, config){
 
 	// Tooltip!
 	self.dom.setAttribute("data-balloon", config.tooltip);
-	self.dom.setAttribute("data-balloon-pos", "right");
+	self.dom.setAttribute("data-balloon-pos", "above");
 
 	// Selected?
 	self.select = function(){
