@@ -16,7 +16,7 @@ canvas{
 #canvasses{
 	position:absolute;
 	top:0; left:0;
-	width: calc(100% - 300px);
+	width: calc(100% - 250px);
 	height: 100%;
 }
 #canvasses[fullscreen=yes]{
@@ -259,7 +259,7 @@ div[big=yes] .play_button_label{
 .component_button[header=yes]{
 	position: absolute;
 	top:calc(100% - 40px); left:0;
-	width: 280px;
+	width: 240px;
 	background: #222;
     border-radius: 0px;
     color: #888;
