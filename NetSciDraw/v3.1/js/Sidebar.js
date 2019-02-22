@@ -411,7 +411,7 @@ function ComponentSlider(config){
 	var movePointer = function(){
 		var value = self.getValue();
 		var optionIndex = config.options.indexOf(value);
-		var x = (optionIndex+0.5) * (250/config.options.length);
+		var x = (optionIndex+0.5) * (200/config.options.length);
 		pointer.style.left = (x-7.5)+"px";
 	};
 
@@ -430,7 +430,7 @@ function ComponentSlider(config){
 	var sliderInput = function(event){
 
 		// What's the option?
-		var index = event.x/250;
+		var index = event.x/200;
 		var optionIndex = Math.floor(index*config.options.length);
 		var option = config.options[optionIndex];
 		if(option===undefined) return;
