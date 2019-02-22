@@ -157,7 +157,7 @@ div[big=yes] .play_button_label{
 	margin: 25px;
 }
 #sidebar > div > div{
-	margin-bottom: 20px;
+	margin-bottom: 35px;
 }
 #sidebar[mode=play]{
 	background: #222;
@@ -169,7 +169,7 @@ div[big=yes] .play_button_label{
 	padding: 3px 5px;
 	border-radius: 2px;
 	font-size: 16px;
-	margin-left:calc(22.5%);
+	margin-left:calc(14%);
 
 	cursor: pointer;
 }
@@ -208,8 +208,8 @@ div[big=yes] .play_button_label{
 	width:calc(100% - 10px);
 	height: 100px;
 	padding: 5px;
-	font-size: 16px;
-	font-weight: 100;
+	font-size: 20px;
+	font-weight: 450;
 }
 .component_output{
 	border: 1px solid #aaa;
@@ -265,7 +265,7 @@ div[big=yes] .play_button_label{
     color: #888;
 }
 .component_button[header=yes]:hover{
-	background: #333;
+	background: #444;
 }
 
 
