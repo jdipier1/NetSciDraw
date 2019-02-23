@@ -31,7 +31,7 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentHTML({
 			html:
-			"<b style='font-size:1.4em'>NetSciDraw</b><br>a learning tool for all students<hr/>"
+			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<hr/>"
 		}));
 		page.addComponent("label", new ComponentInput({
 			label: "Notes",
@@ -110,7 +110,7 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentHTML({
 			html:
-			"<b style='font-size:1.4em'>NetSciDraw</b><br>a learning tool for all students<hr/>"
+			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<hr/>"
 		}));
 		page.addComponent("hues", new ComponentSlider({
 			bg: "color",
@@ -156,7 +156,7 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentHTML({
 			html:
-			"<b style='font-size:1.4em'>NetSciDraw</b><br>a learning tool for all students<hr/>"
+			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<hr/>"
 		}));
 //		page.addComponent(new ComponentButton({
 //			header: true,
@@ -219,9 +219,9 @@ function Sidebar(loopy){
 		var page = new SidebarPage();
 		page.addComponent(new ComponentHTML({
 			html: ""+
-			
-			"<b style='font-size:1.4em'>NetSciDraw</b><br>a learning tool for all students<br><br>"+
-			"Any suggestions? Contact us at netscidraw5@gmail.com<br>" +
+
+			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<br><br>"+
+			"Any suggestions? Contact us at netscidraw5@gmail.com<br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
@@ -229,14 +229,14 @@ function Sidebar(loopy){
 			"<hr/>"+ "<br>"+
 
 			"<span class='mini_button' onclick='publish(\"modal\",[\"save_link\"])'>Save Your Work!</span> <br><br>"+
-//			//"<span class='mini_button' onclick='publish(\"modal\",[\"save_image\"])'>save as image</span> <br><br>"+
+			"<span class='mini_button' onclick='publish(\"modal\",[\"save_image\"])'>Save as Image!</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
 			"<style='font-size:1.4em'>Click the pencil icon and use your finger or mouse to draw<br><br>"+
-			"<br>"+
+			
 			"Type in your drawings to organize your thoughts<br><br>"+
-			"<br>"+
+			
 			"Use the arrows to connect your thoughts and build your own network<br>"+
 			"<br>"+
 			"<hr/><br>"+
