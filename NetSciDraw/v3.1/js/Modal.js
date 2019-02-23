@@ -152,6 +152,27 @@ function Modal(loopy){
 		self.addPage("save_link", page);
 	})();
 
+	// Save as image
+	(function(){
+		var page = new Page();
+		page.width = 500;
+		page.height = 155;
+		page.addComponent(new ComponentHTML({
+			html: "save diagram as an image:"
+		}));
+		var output = page.addComponent(new ComponentOutput({}));
+
+		page.onshow = function(){
+
+			//STUFF NEEDS TO GO HERE TO GET THIS TO WORK
+			
+		};
+
+		// or, tweet it
+		self.addPage("save_image", page);
+	})();
+
+
 	// Embed
 	(function(){
 		var page = new Page();
