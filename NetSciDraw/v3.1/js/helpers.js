@@ -178,7 +178,7 @@ function _addMouseEvents(target, onmousedown, onmousemove, onmouseup){
 
 	// TOUCH.
 	var _ontouchstart = function(event) {
-		if (e.touches.length === 1) {
+		if (event.touches.length === 1) {
 			_onmousedown(event);
 		}
 	}
