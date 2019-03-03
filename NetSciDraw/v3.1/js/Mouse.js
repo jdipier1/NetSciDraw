@@ -1,7 +1,17 @@
+// Well, technecally this handles the mouse AND touch interface now
+
 window.Mouse = {};
+Mouse.pinching = false;
+
+//Dragging
+Mouse.initPinchDist = -1;
+Mouse.initPinchScale = -1;
+Mouse.PINCH_SENSITIVITY = 256.0;
+
 Mouse.init = function(target){
 
 	// Events!
+
 	var _onmousedown = function(event){
 		Mouse.moved = false;
 		Mouse.pressed = true;
@@ -68,5 +78,24 @@ Mouse.init = function(target){
 	Mouse.update = function(){
 		Mouse.showCursor("");
 	};
-
 };
+
+Mouse.onPinchMove = function(e) {
+	if (Mouse.initPinchDist === -1) {
+		Mouse.initPinchDist = Math.hypot(
+			e.touches[0].pageX - e.touches[1].pageX,
+			e.touches[0].pageY - e.touches[1].pageY);
+		Mouse.initPinchScale = Model.scale;
+		return;
+	}
+
+	var dist = Math.hypot(
+		e.touches[0].pageX - e.touches[1].pageX,
+		e.touches[0].pageY - e.touches[1].pageY);
+
+	Model.targetScale = Math.min(Math.max(Mouse.initPinchScale + ((Mouse.initPinchDist - dist)/Mouse.PINCH_SENSITIVITY), .25), 3);
+}
+
+Mouse.onPinchEnd = function(e) {
+	Mouse.initPinchDist = -1;
+}
