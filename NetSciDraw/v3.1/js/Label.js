@@ -1,7 +1,5 @@
 /**********************************
-
 LABEL!
-
 **********************************/
 
 Label.FONTSIZE = 40;
@@ -36,6 +34,7 @@ function Label(model, config){
 		if(self.loopy.sidebar.currentPage.target == self){
 			var bounds = self.getBounds();
 			ctx.save();
+			_translate(ctx, 0, 0);
 			ctx.scale(2,2); // RETINA
 			ctx.beginPath();
 			ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -46,7 +45,7 @@ function Label(model, config){
 
 		// Translate!
 		ctx.save();
-		ctx.translate(x,y);
+		_translate(ctx, x,y);
 
 		// Text!
 		Label.COLORS = {
@@ -103,6 +102,7 @@ function Label(model, config){
 	self.getBounds = function(){
 
 		var ctx = self.model.context;
+		ctx.restore();
 
 		// Get MAX width...
 		var lines = self.breakText();
@@ -124,11 +124,10 @@ function Label(model, config){
 			width: w,
 			height: h+Label.FONTSIZE/2
 		};
-
 	};
 
 	self.isPointInLabel = function(x, y){
-		return _isPointInBox(x,y, self.getBounds());
+		return _isPointInBox(x, y, self.getBounds());
 	};
 
 	self.getBoundingBox = function(){

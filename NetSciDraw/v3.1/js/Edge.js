@@ -144,6 +144,7 @@ function Edge(model, config){
 			var size = 40; // HARD-CODED
 			ctx.scale(signal.scaleX, signal.scaleY);
 			ctx.scale(size, size);
+			
 
 			// Signal's COLOR, BLENDING
 //			var fromColor = Node.COLORS[self.from.hue];
@@ -385,7 +386,8 @@ function Edge(model, config){
 
 		// Translate & Rotate!
 		ctx.save();
-		ctx.translate(fx, fy);
+		_translate(ctx, fx, fy);
+		//ctx.translate(fx, fy);
 		ctx.rotate(a);
 
 		// Highlight!

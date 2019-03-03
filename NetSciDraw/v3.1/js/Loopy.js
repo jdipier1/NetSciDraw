@@ -13,6 +13,9 @@ Loopy.TOOL_DRAG = 1;
 Loopy.TOOL_ERASE = 2;
 Loopy.TOOL_LABEL = 3;
 
+Loopy.REDRAW_TICK_RATE  = 1000 / 60; 	// 60 ticks per second
+Loopy.LOGIC_TICK_RATE	= 1000 / 50;	// 50 ticks per second
+
 function Loopy(config){
 
 	var self = this;
@@ -79,15 +82,16 @@ function Loopy(config){
 			self.model.update(); // modEl
 		}
 	};
-	setInterval(self.update, 1000/30); // 30 FPS, why not.
-
+	setInterval(self.update, Loopy.LOGIC_TICK_RATE); // 30 Fps? psh. 60
 	// Draw
 	self.draw = function(){
 		if(!self.modal.isShowing){ // modAl
+			
 			self.model.draw(); // modEl
 		}
-		requestAnimationFrame(self.draw);
+		//requestAnimationFrame(self.draw);
 	};
+	setInterval(self.draw, Loopy.REDRAW_TICK_RATE); // 30 Fps? psh. 60
 
 	// TODO: Smarter drawing of Ink, Edges, and Nodes
 	// (only Nodes need redrawing often. And only in PLAY mode.)
@@ -159,8 +163,9 @@ function Loopy(config){
 		// NO LONGER DIRTY!
 		self.dirty = false;
 
+		// Commented this out, idk why but it makes this function break
 		// PUSH TO HISTORY
-		window.history.replaceState(null, null, historyLink);
+		//window.history.replaceState(null, null, historyLink);
 
 		return link;
 
@@ -256,7 +261,7 @@ function Loopy(config){
 
 		}
 
-	}
+}
 
 	// NOT DIRTY, THANKS
 	self.dirty = false;
@@ -265,7 +270,7 @@ function Loopy(config){
 	document.body.style.opacity = "";
 
 	// GO.
-	requestAnimationFrame(self.draw);
-
+	//requestAnimationFrame(self.draw);
+	self.draw();
 
 }

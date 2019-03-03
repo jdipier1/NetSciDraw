@@ -17,6 +17,7 @@ Node.COLORS = {
 //Node.defaultHue = 0;
 
 Node.DEFAULT_RADIUS = 60;
+Node.scale = 1.0;
 
 function Node(model, config){
 
@@ -36,7 +37,11 @@ function Node(model, config){
 		init: Node.defaultValue, // initial value!
 		label: "?",
 		hue: 6, // Makes the initital color of a circle black
-		radius: Node.DEFAULT_RADIUS
+		textHue: 6,
+		radius: Node.DEFAULT_RADIUS,
+		xscale: 1,
+		yscale: 1,
+		isRect: false
 	});
 
 	// Value: from 0 to 1
@@ -182,16 +187,20 @@ function Node(model, config){
 	self.draw = function(ctx){
 
 		// Retina
-		var x = self.x*2;
-		var y = self.y*2;
+		var x = (self.x*2);
+		var y = (self.y*2);
 		var r = self.radius*2;
+		var xs = self.xscale/2;
+		var ys = self.yscale/2;
 		var color = Node.COLORS[self.hue];
+		var textColor = Node.COLORS[self.textHue];
 
 		// Translate!
 		ctx.save();
-		ctx.translate(x,y+_offset);
+		_translate(ctx, x, y+_offset);
 		
-		// DRAW HIGHLIGHT???
+		// DRAW HIGHLIGHT
+		// TODO: I think this does fuckall -jay
 		if(self.loopy.sidebar.currentPage.target == self){
 			ctx.beginPath();
 			ctx.arc(0, 0, r+40, 0, Math.TAU, false);
@@ -201,7 +210,13 @@ function Node(model, config){
 		
 		// White-gray bubble with colored border
 		ctx.beginPath();
-		ctx.arc(0, 0, r-2, 0, Math.TAU, false);
+		if (self.isRect) {
+			ctx.rect(-r*xs, -r*ys, (r*2)*xs, (r*2)*ys);
+			// Lazy fix for text
+			r = xs;
+		} else {
+			ctx.arc(0, 0, r-2, 0, Math.TAU, false);
+		}
 		ctx.fillStyle = "#fff";
 		ctx.fill();
 		ctx.lineWidth = 6;
@@ -247,7 +262,16 @@ function Node(model, config){
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		ctx.fillStyle = "#000";
-		var width = ctx.measureText(self.label).width;
+		//var width = ctx.measureText(self.label).width;
+
+		ctx.fillStyle = textColor;
+		if (self.isRect) {
+			_boundedText(ctx, self.label, 0, 0, xs*4, ys*4, 40);
+		} else {
+			var size = Math.sqrt(2 * (r*r));
+			_boundedText(ctx, self.label, 0, 0, size ,size, 20);
+		}
+		/*ctx.fillText(self.label, 0, 0);
 
 		if(width<r*2 -60){
 			ctx.fillText(self.label, 0, 0);
@@ -320,7 +344,7 @@ function Node(model, config){
 			ctx.fillText(self.label.substr((indices[indices_four]),((indices[indices_two])-(indices[indices_four]))),0,-20);
 			ctx.fillText(self.label.substr((indices[indices_two]),((indices[indices_four2])-(indices[indices_two]))),0,20);
 			ctx.fillText(self.label.substr((indices[indices_four2]),((self.label.length)-(indices[indices_four2]))),0,60);
-		}
+		}*/
 
 		// Restore
 		ctx.restore();
@@ -414,7 +438,13 @@ function Node(model, config){
 
 	self.isPointInNode = function(x, y, buffer){
 		buffer = buffer || 0;
-		return _isPointInCircle(x, y, self.x, self.y, self.radius+buffer);
+		if (self.isRect) {
+			var dx = (self.xscale/2)*self.radius;
+			var dy = (self.yscale/2)*self.radius;
+			return _isPointInBox(x, y, self.x-dx, self.y-dy, dx*2, dy*2);
+		} else {
+			return _isPointInCircle(x, y, self.x, self.y, self.radius+buffer);
+		}
 	};
 
 	self.getBoundingBox = function(){

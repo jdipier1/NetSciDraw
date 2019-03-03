@@ -33,8 +33,8 @@ function _createCanvas(){
 
 	// Dimensions
 	var _onResize = function(){
-		var width = canvasses.clientWidth;
-		var height = canvasses.clientHeight;
+		var width = canvasses.clientWidth*Model.scale;
+		var height = canvasses.clientHeight*Model.scale;
 		canvas.width = width*2; // retina
 		canvas.style.width = width+"px";
 		canvas.height = height*2; // retina
@@ -119,10 +119,6 @@ function _createNumberInput(onUpdate){
 
 }
 
-function _blank(){
-	// just a blank function to toss in.
-}
-
 function _getTotalOffset(target){
 	var bounds = target.getBoundingClientRect();
 	return {
@@ -148,6 +144,17 @@ function _addMouseEvents(target, onmousedown, onmousemove, onmouseup){
 			_fakeEvent.x = event.changedTouches[0].clientX - offset.left;
 			_fakeEvent.y = event.changedTouches[0].clientY - offset.top;
 			event.preventDefault();
+
+			if (Mouse.pinching && event.touches.length === 2) {
+				Mouse.onPinchMove(event);
+			} else if (!Mouse.pinching && event.touches.length === 2) {
+				Mouse.pinching = true;
+			} else if (Mouse.pinching) {
+				Mouse.onPinchEnd(event);
+			}
+
+			if (event.touches.length != 1) 
+				return;
 		}else{
 			// Not Touch
 			_fakeEvent.x = event.offsetX;
@@ -170,9 +177,24 @@ function _addMouseEvents(target, onmousedown, onmousemove, onmouseup){
 	document.body.addEventListener("mouseup", _onmouseup);
 
 	// TOUCH.
-	target.addEventListener("touchstart",_onmousedown,false);
+	var _ontouchstart = function(event) {
+		if (e.touches.length === 1) {
+			_onmousedown(event);
+		}
+	}
+
+	var _ontouchend = function(event) {
+		if (Mouse.pinching) {
+			Mouse.onPinchEnd(event);
+			Mouse.pinching = false;
+		}
+		
+		_onmouseup(event);
+	}
+	
+	target.addEventListener("touchstart",_ontouchstart,false);
 	target.addEventListener("touchmove",_onmousemove,false);
-	document.body.addEventListener("touchend",_onmouseup,false);
+	document.body.addEventListener("touchend",_ontouchend,false);
 
 }
 
@@ -243,12 +265,12 @@ function _configureProperties(self, config, properties){
 function _isPointInCircle(x, y, cx, cy, radius){
 	
 	// Point distance
-	var dx = cx-x;
-	var dy = cy-y;
+	var dx = (_getRelX(cx)-x);
+	var dy = (_getRelY(cy)-y);
 	var dist2 = dx*dx + dy*dy;
 
 	// My radius
-	var r2 = radius*radius;
+	var r2 = radius*radius * Model.scale*Model.scale;
 
 	// Inside?
 	return dist2<=r2;
@@ -256,14 +278,10 @@ function _isPointInCircle(x, y, cx, cy, radius){
 }
 
 function _isPointInBox(x, y, box){
-
-	if(x<box.x) return false;
-	if(x>box.x+box.width) return false;
-	if(y<box.y) return false;
-	if(y>box.y+box.height) return false;
-
-	return true;
-
+	return (x >= _getRelX(box.x)
+		&&  x <= _getRelX(box.x+box.width)
+		&&  y >= _getRelY(box.y*Model.scale)
+		&&  y <= _getRelY(box.y+box.height));
 }
 
 // TODO: Make more use of this???
@@ -315,4 +333,76 @@ function _shiftArray(array, shiftIndex){
 	return shifted;
 }
 
+function _translate(ctx, x, y) {
+	ctx.translate(Model.canvasCenterX, Model.canvasCenterY);
+	ctx.scale(Model.scale, Model.scale);
+	ctx.translate(x - Model.canvasCenterX,y - Model.canvasCenterY);
+}
 
+// TODO: Rid of these ugly functions
+function _getRelX(x) {
+	return Model.contextCenterX + ((x - Model.contextCenterX)*Model.scale);
+}
+
+function _getRelY(y) {
+	return Model.contextCenterY + ((y - Model.contextCenterY)*Model.scale);
+}
+
+/**
+ * Draws a string at x,y bounded by a width and height value
+ * 
+ * @param {} ctx the canvas
+ * @param {*} str the string to draw
+ * @param {*} x the x position
+ * @param {*} y the y position
+ * @param {*} width the width that the string should not exceed
+ * @param {*} height the height that the string should not exceed
+ * @param {*} padding padding between the text and the bounded borders
+ */
+function _boundedText(ctx, str, x, y, width, height, padding) {
+	var w = 0;
+	var numBreaks = 0;
+	var hApprox = 30; // Approximate height
+	var strNew = "";
+	var strings = [];
+	var yOffset = 0;
+
+	for(var i = 0; i < str.length; i++) {
+		if (w+20 > width-padding) {
+			if ((hApprox * numBreaks) + (hApprox) > height-padding) {
+				var targetLen = ctx.measureText("...").width;
+				var numCharsToRemove = 1;
+				while(true) {
+					if (strNew.length < numCharsToRemove) {
+						numCharsToRemove = 0
+						break;
+					}
+
+					var chop = ctx.measureText(strNew.substring(0, strNew.length-numCharsToRemove)).width;
+					if (chop >= targetLen) {
+						break;
+					}
+
+					numCharsToRemove++;
+				}
+				strNew = strNew.substring(0, strNew.length-numCharsToRemove);
+				strNew += "...";
+				break;
+			}
+
+			strings.push(strNew);
+
+			numBreaks++;
+			strNew = "";
+			yOffset -= hApprox/2;
+		}
+
+		strNew += str.charAt(i);
+		w = ctx.measureText(strNew).width;
+	}
+
+	for(var i = 0; i < strings.length; i++) {
+		ctx.fillText(strings[i], x, (y-((i+1)*hApprox))-yOffset);
+	}
+	ctx.fillText(strNew, x, y-yOffset);
+}

@@ -35,15 +35,14 @@ function Sidebar(loopy){
 		}));
 		page.addComponent("label", new ComponentInput({
 			label: "Notes",
-			//label: "Label:",
-			textarea: true
+			textarea: true,
 		}));
 		page.addComponent("hue", new ComponentSlider({
 			bg: "color",
 			label: "Color",
 			options: [0,1,2,3,4,5,6],
 			oninput: function(value){
-				Node.defaultHue = value;
+				//Node.defaultHue = value;
 			}
 		}));
 //		page.addComponent("init", new ComponentSlider({
@@ -71,7 +70,12 @@ function Sidebar(loopy){
 			label: "Increase Size",
 			//label: "delete circle",
 			onclick: function(node){
-				node.radius = node.radius +10;
+				if (node.isRect) {
+					node.xscale += 10;
+					node.yscale += 10;
+				} else {
+					node.radius += 10;
+				}
 			}
 		}));
 
@@ -79,13 +83,15 @@ function Sidebar(loopy){
 			label: "Decrease Size",
 			//label: "delete circle",
 			onclick: function(node){
-				if(node.radius > 15){
-					node.radius = node.radius - 10;
+				if (node.isRect) {
+					node.xscale = Math.max(node.xscale - 10, 15);
+					node.yscale = Math.max(node.yscale - 10, 15);
 				} else {
-				node.radius = node.radius;
+					node.radius = Math.max(node.radius - 10, 15);
+				}
 			}
-		}
 		}));
+		
 		page.addComponent(new ComponentButton({
 			//label: "delete edge",
 			label: "Delete",
@@ -112,7 +118,7 @@ function Sidebar(loopy){
 			html:
 			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<hr/>"
 		}));
-		page.addComponent("hues", new ComponentSlider({
+		page.addComponent("border", new ComponentSlider({
 			bg: "color",
 			label: "Color",
 			options: [7,8,9,10,11,12,13],
@@ -120,6 +126,7 @@ function Sidebar(loopy){
 				Edge.defaultHues = value;
 			}
 		}));
+
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
@@ -170,6 +177,7 @@ function Sidebar(loopy){
 			//label: "Label:",
 			textarea: true
 		}));
+
 		page.addComponent("hues", new ComponentSlider({
 			bg: "color",
 			label: "Color",
@@ -178,6 +186,7 @@ function Sidebar(loopy){
 				Edge.defaultHues = value;
 			}
 		}));
+		
 		page.onshow = function(){
 			// Focus on the text field
 			page.getComponent("text").select();
