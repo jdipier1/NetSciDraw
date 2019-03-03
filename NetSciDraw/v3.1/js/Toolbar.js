@@ -64,6 +64,7 @@ function Toolbar(loopy){
 			self.setTool("ink");
 		}
 	});
+
 	self.addButton({
 		id: "label",
 		tooltip: "(T)EXT",
@@ -71,6 +72,7 @@ function Toolbar(loopy){
 			self.setTool("label");
 		}
 	});
+
 	self.addButton({
 		id: "drag",
 		tooltip: "MO(V)E",
@@ -78,11 +80,28 @@ function Toolbar(loopy){
 			self.setTool("drag");
 		}
 	});
+
 	self.addButton({
 		id: "erase",
-		tooltip: "(E)RASE",
+		tooltip: "(E)RASER",
 		callback: function(){
 			self.setTool("erase");
+		}
+	});
+
+	self.addButton({
+		id: "zoom_in",
+		tooltip: "ZOOM IN",
+		callback: function() {
+			Model.targetScale = Math.min(Model.targetScale + 0.25, 3);
+		}
+	});
+
+	self.addButton({
+		id: "zoom_out",
+		tooltip: "ZOOM OUT",
+		callback: function() {
+			Model.targetScale = Math.max(Model.targetScale - 0.25, .25);
 		}
 	});
 

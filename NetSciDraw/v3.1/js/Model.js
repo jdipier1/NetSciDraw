@@ -4,6 +4,11 @@ MODEL!
 
 **********************************/
 
+Model.scale = 1.0;
+Model.targetScale = 1.0;
+Model.width = 1;
+Model.height = 1;
+
 function Model(loopy){
 
 	var self = this;
@@ -18,7 +23,10 @@ function Model(loopy){
 	self.canvas = canvas;
 	self.context = ctx;
 
-
+	Model.canvasCenterX = canvas.width/2;
+	Model.canvasCenterY = canvas.height/2;
+	Model.contextCenterX = ctx.canvas.clientWidth/2;
+	Model.contextCenterY = ctx.canvas.clientHeight/2;
 
 	///////////////////
 	// NODES //////////
@@ -30,6 +38,10 @@ function Model(loopy){
 	self.getNode = function(id){
 		return self.nodeByID[id];
 	};
+
+	Model.getCanvas = function() {
+		return canvas;
+	}
 
 	// Remove Node
 	self.addNode = function(config){
@@ -152,6 +164,12 @@ function Model(loopy){
 
 	self.update = function(){
 
+		if (Math.abs(Model.scale - Model.targetScale) > .005) {
+			Model.scale = _lerp(Model.scale, Model.targetScale, 0.2);
+		} else {
+			Model.scale = Model.targetScale;
+		}
+
 		// Update edges THEN nodes
 		for(var i=0;i<self.edges.length;i++) self.edges[i].update(self.speed);
 		for(var i=0;i<self.nodes.length;i++) self.nodes[i].update(self.speed);
@@ -187,29 +205,17 @@ function Model(loopy){
 
 	self.draw = function(){
 
-		// SHOULD WE DRAW?
-		// ONLY IF ARROW-SIGNALS ARE MOVING
-		for(var i=0;i<self.edges.length;i++){
-			if(self.edges[i].signals.length>0){
-				drawCountdown = drawCountdownFull;
-				break;
-			}
-		}
-
-		// DRAW???????
-		drawCountdown--;
-		if(drawCountdown<=0) return;
-
 		// Also only draw if last updated...
 		if(!_canvasDirty) return;
 		_canvasDirty = false;
 
 		// Clear!
+		//ctx.clearRect(0,0,self.canvas.width,self.canvas.height);
 		ctx.clearRect(0,0,self.canvas.width,self.canvas.height);
-
 		// Translate
 		ctx.save();
 
+		
 		// Translate to center, (translate, scale, translate) to expand to size
 		var canvasses = document.getElementById("canvasses");
 		var CW = canvasses.clientWidth - _PADDING - _PADDING;
@@ -234,9 +240,21 @@ function Model(loopy){
 		for(var i=0;i<self.edges.length;i++) self.edges[i].draw(ctx);
 		for(var i=0;i<self.nodes.length;i++) self.nodes[i].draw(ctx);
 
+		
+
+		ctx.beginPath();
+		ctx.rect(
+			3+Model.canvasCenterX-(Model.canvasCenterX*Model.scale),
+			3+Model.canvasCenterY-(Model.canvasCenterY*Model.scale),
+			-3+(2*Model.canvasCenterX*Model.scale),
+			-3+(2*Model.canvasCenterY*Model.scale));
+		//ctx.fillStyle = "#fff";
+		//ctx.fill();
+		ctx.lineWidth = 6;
+		ctx.strokeStyle = "#000";
+		ctx.stroke();
 		// Restore
 		ctx.restore();
-
 	};
 
 

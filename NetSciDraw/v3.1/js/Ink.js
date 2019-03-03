@@ -23,34 +23,102 @@ function Ink(loopy){
 	self.context = ctx;
 
 	// Stroke data!
-	self.strokeData = [];
+	self.strokeData 	= [];
+
+	self.geomEdges 		= [];		// The basic primitive made by strokeData
+	self.geomDir		= 0;		// For determining when to add the next edge to the geomEdges
+	self.geomScore		= 0;		// A "score" put onto the number of edges
+
+	// Helper function
+	extendGeomEdge = function(dx, dy) {
+		var lastPt = self.geomEdges[self.geomEdges.length-1];
+		var len = _distance(dx,dy,lastPt[0], lastPt[1]);
+		var dir = _pointDirection(dx,dy,lastPt[0], lastPt[1]);
+		self.geomEdges[self.geomEdges.length-1][0] += len*Math.cos(dir);
+		self.geomEdges[self.geomEdges.length-1][1] += len*Math.sin(dir);
+	}
+
 
 	// Drawing!
 	self.drawInk = function(){
-
 		if(!Mouse.pressed) return;
 
 		// Last point
 		var lastPoint = self.strokeData[self.strokeData.length-1];
 
+		// No point to drawing the same point over again
+		if (lastPoint[0] == Mouse.x/Model.scale && lastPoint[1] == Mouse.y/Model.scale) return;
+
 		// Style
+		ctx.save();
+		ctx.scale(Model.scale, Model.scale);
+
 		ctx.strokeStyle = "#FF000";
 		ctx.lineWidth = 5;
 		ctx.lineCap = "round";
 
+		
+
+		// DEBUG
+		//ctx.arc(Mouse.x, Mouse.y, 64, 0, Math.TAU, true);
+
 		// Draw line from last to current
 		ctx.beginPath();
 		ctx.moveTo(lastPoint[0]*2, lastPoint[1]*2);
-		ctx.lineTo(Mouse.x*2, Mouse.y*2);
+		ctx.lineTo(Mouse.x/Model.scale*2, Mouse.y/Model.scale*2);
 		ctx.stroke();
+		ctx.restore();
+
+		
 
 		// Update last point
-		self.strokeData.push([Mouse.x,Mouse.y]);
+		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
 
+
+		var dx = _roundDown(Mouse.x/Model.scale, 4);
+		var dy = _roundDown(Mouse.y/Model.scale, 4);
+		// Update primitive
+		if (self.geomEdges.length < 2) {
+			self.geomEdges.push([dx, dy]);
+		} else {
+			var g1 = self.geomEdges[self.geomEdges.length-2];
+			var g2 = self.geomEdges[self.geomEdges.length-1];
+
+			if (_distanceSquared(dx,dy,g2[0],g2[1]) < 100) {
+				return;
+			}
+		
+			if (self.geomEdges.length == 2) {
+				self.geomDir 	= _normalize(_pointDirection(g1, g2));
+			}
+
+			if (g2[0] == dx && g2[1] == dy) {
+				return;
+			}
+			
+			var newDir	= _normalize([dx - g2[0], dy - g2[1]]);
+			var dp = _dotProduct(self.geomDir, newDir);
+
+			if (dp > .65) {
+				if (dp > .8) {
+					extendGeomEdge(dx, dy);
+				} else {
+					self.geomEdges.push([dx, dy]);
+					self.geomDir = newDir;
+				}
+			} else {
+				self.geomEdges.push([dx, dy]);
+				self.geomScore++;
+				self.geomDir = newDir;
+			}
+		}
 	};
+
 	self.reset = function(){
 		ctx.clearRect(0,0,canvas.width,canvas.height); // Clear canvas
 		self.strokeData = []; // Reset stroke data
+		self.geomEdges = [];
+		self.geomScore = 0;
 	};
 	subscribe("mousedown",function(){
 
@@ -60,7 +128,10 @@ function Ink(loopy){
 
 		// New stroke data
 		self.strokeData = [];
-		self.strokeData.push([Mouse.x,Mouse.y]);
+		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
+		self.geomEdges = [];
+		self.geomEdges.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
+		self.geomScore = 0;
 
 		// Draw to canvas!
 		self.drawInk();
@@ -175,9 +246,21 @@ function Ink(loopy){
 
 			// Just roughly make a circle the size of the bounds of the circle
 			var bounds = _getBounds(self.strokeData);
-			var x = (bounds.left+bounds.right)/2;
-			var y = (bounds.top+bounds.bottom)/2;
+
+			// TODO: This breaks when Model.scale != 1
+
+			/*bounds.left  = Model.canvasCenterX + (bounds.left -Model.canvasCenterX)*Model.scale;
+			bounds.right = Model.canvasCenterX + (bounds.right-Model.canvasCenterX)*Model.scale;
+			bounds.top 		= Model.canvasCenterY + (bounds.top    -Model.canvasCenterY)*Model.scale;
+			bounds.bottom 	= Model.canvasCenterY + (bounds.bottom -Model.canvasCenterY)*Model.scale;*/
+
+
+			var x = ((bounds.left+bounds.right)/2);
+			var y = ((bounds.top+bounds.bottom)/2);
 			var r = ((bounds.width/2)+(bounds.height/2))/2;
+
+			x = Model.contextCenterX + ((x - Model.contextCenterX)*Model.scale);
+			y = Model.contextCenterY + ((y - Model.contextCenterY)*Model.scale);
 
 			// Circle can't be TOO smol
 			if(r>15){
@@ -189,17 +272,27 @@ function Ink(loopy){
 				// LOCK TO JUST SMALLEST CIRCLE.
 				r = (((bounds.right-bounds.left)/4)+(bounds.bottom-bounds.top)/4); //change made from min radius 
 				
-
 				// Make that node!
-				var newNode = loopy.model.addNode({
-					x:x,
-					y:y,
-					radius:r
-				});
-
+				if (self.geomScore > 3) {
+					var newNode = loopy.model.addNode({
+						x:x,
+						y:y,
+						radius:1,								// If you want this to noly make squares, change this to 'r'
+						xscale:bounds.right - bounds.left,		// in addition to above, comment out this line
+						yscale:bounds.bottom - bounds.top,		// and this line
+						isRect: true
+					});
+				} else {
+					var newNode = loopy.model.addNode({
+						x:x,
+						y:y,
+						radius:r,
+						isRect: false
+					});
+				}
+				
 				// Edit it immediately
 				loopy.sidebar.edit(newNode);
-
 			}
 
 		}
@@ -218,5 +311,4 @@ function Ink(loopy){
 		self.reset();
 
 	});
-
 }
