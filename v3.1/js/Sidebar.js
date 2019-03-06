@@ -230,7 +230,11 @@ function Sidebar(loopy){
 			html: ""+
 
 			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<br><br>"+
+			"<img src = '../NSD.png' width='195' height='90' border='2'></img><br>"+
+			"<br>"+
 			"Any suggestions? Contact us at netscidraw5@gmail.com<br>"+
+
+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
@@ -247,11 +251,11 @@ function Sidebar(loopy){
 			"Type in your drawings to organize your thoughts<br><br>"+
 			
 			"Use the arrows to connect your thoughts and build your own network<br>"+
-			"<br>"+
-			"<hr/><br>"+
+			//"<br>"+
+			//"<hr/><br>"+
 				
-			"NetSciDraw</a> is "+
-			"made by Adam Lindeman, Joe Di Piero, Thomas Mayer, Justin Rowe, Chris Bachman and Jay Heller, with supervision of Hiroki Sayama" +
+			//"NetSciDraw</a> is "+
+			//"made by Adam Lindeman, Joe Di Piero, Thomas Mayer, Justin Rowe, Chris Bachman and Jay Heller, with supervision of Hiroki Sayama" +
 			"<br>"
 		}));
 		self.addPage("Edit", page);
