@@ -230,9 +230,9 @@ function Sidebar(loopy){
 			html: ""+
 
 			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<br><br>"+
-			"<img src = '../NSD.png' width='195' height='90' border='2'></img><br>"+
+			"<img src = '../NSD.png' width='195' height='90' border='2'></img>"+
 			"<br>"+
-			"Any suggestions? Contact us at netscidraw5@gmail.com<br>"+
+			"<br>"+
 
 
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
@@ -241,8 +241,33 @@ function Sidebar(loopy){
 
 			"<hr/>"+ "<br>"+
 
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_link\"])'>Save Your Work!</span> <br><br>"+
-			"<span class='mini_button' onclick='publish(\"modal\",[\"save_image\"])'>Save as Image!</span> <br><br>"+
+
+			
+			"<style>"+
+			".button {"+
+			  "background-color: #555555;"+
+			  "border: none;"+
+			  "color: white;"+
+			  "padding: 10px 30px;"+
+			  "text-align: center;"+
+			  "text-decoration: none;"+
+			  "display: inline-block;"+
+			  "font-size: 16px;"+
+			  "margin: 1px 2px;"+
+			  "cursor: pointer;"+
+			  "width: 68%"+
+			"}"+
+
+			".button:hover {"+
+  			"background-color: #ddd;"+
+  			"color: black;"+
+  			"}"+
+
+			"</style>"+
+
+			"<span class='button' onclick='publish(\"modal\",[\"save_link\"])'>Save Your Work!</span> <br><br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"save_image\"])'>Save as Image!</span> <br><br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"help_button\"])'>Need Help?</span> <br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
