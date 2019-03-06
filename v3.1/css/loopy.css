@@ -108,7 +108,7 @@ div[big=yes] .play_button_label{
 	left: calc(50% - 345px);
 	top: calc(100% - 69px); /* 33% - half of toolbar height */
 
-	width:380px; height:65px;
+	width:385px; height:65px;
 	padding: 5px;
 	background-color: #ADD8E6; /* put #ddd to get back to original color */
 
