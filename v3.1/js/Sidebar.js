@@ -251,7 +251,7 @@ function Sidebar(loopy){
 			"<hr/><br>"+
 				
 			"NetSciDraw</a> is "+
-			"made by Adam Lindeman, Joe Di Piero, Thomas Mayer, Justin Rowe, and Chris Bachman, with supervision of Hiroki Sayama" +
+			"made by Adam Lindeman, Joe Di Piero, Thomas Mayer, Justin Rowe, Chris Bachman and Jay Heller, with supervision of Hiroki Sayama" +
 			"<br>"
 		}));
 		self.addPage("Edit", page);
