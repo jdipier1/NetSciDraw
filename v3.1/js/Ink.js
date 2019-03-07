@@ -281,22 +281,22 @@ function Ink(loopy){
 				// Make that node!
 				if (self.geomScore > 3) {
 					var newNode = loopy.model.addNode({
-						x:x,
-						y:y,
-						radius:1,								// If you want this to noly make squares, change this to 'r'
-						xscale:bounds.right - bounds.left,		// in addition to above, comment out this line
-						yscale:bounds.bottom - bounds.top,		// and this line
-						isRect: true
+						x: x,
+						y: y,
+						width: bounds.right - bounds.left,		// in addition to above, comment out this line
+						height: bounds.bottom - bounds.top,		// and this line
+						shape: Shapes.RECTANGLE,
 					});
 				} else {
 					var newNode = loopy.model.addNode({
-						x:x,
-						y:y,
-						radius:r,
-						isRect: false
+						x: x,
+						y: y,
+						width: r,
+						height: r,
+						shape: Shapes.CIRCLE,
 					});
 				}
-				
+							
 				// Edit it immediately
 				loopy.sidebar.edit(newNode);
 			}

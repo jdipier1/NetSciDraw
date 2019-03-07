@@ -3,6 +3,7 @@
  * 
  * Represents the nodes in the project
  */
+
 Node.COLORS = {
 	0: "#EA3E3E", // red
 	1: "#EA9D51", // orange
@@ -13,18 +14,15 @@ Node.COLORS = {
 	6: "#000000", // black
 };
 
-//Node.defaultValue = 0.5;
-//Node.defaultHue = 0;
-
 Node.DEFAULT_RADIUS = 60;
 Node.scale = 1.0;
 
-function Node(model, config){
+function Node(model, config) {
 
 	var self = this;
 	self._CLASS_ = "Node";
 
-	// Mah Parents!
+	// Parents
 	self.loopy = model.loopy;
 	self.model = model;
 	self.config = config;
@@ -38,10 +36,9 @@ function Node(model, config){
 		label: "?",
 		hue: 6, // Makes the initital color of a circle black
 		textHue: 6,
-		radius: Node.DEFAULT_RADIUS,
-		xscale: 1,
-		yscale: 1,
-		isRect: false
+		width: Node.DEFAULT_RADIUS,
+		height: Node.DEFAULT_RADIUS,
+		shape: Shapes.CIRCLE,
 	});
 
 	// Value: from 0 to 1
@@ -141,11 +138,6 @@ function Node(model, config){
 
 	// Update!
 	var _offset = 0;
-	var _offsetGoto = 0;
-	var _offsetVel = 0;
-	var _offsetAcc = 0;
-	var _offsetDamp = 0.3;
-	var _offsetHookes = 0.8;
 	self.update = function(speed){
 
 // ***CAN BE DELETED***
@@ -183,15 +175,13 @@ function Node(model, config){
 	};
 
 	// Draw
-	var _circleRadius = 0;
 	self.draw = function(ctx){
 
 		// Retina
 		var x = (self.x*2);
 		var y = (self.y*2);
-		var r = self.radius*2;
-		var xs = self.xscale/2;
-		var ys = self.yscale/2;
+		var xs = self.width*2;
+		var ys = self.height*2;
 		var color = Node.COLORS[self.hue];
 		var textColor = Node.COLORS[self.textHue];
 
@@ -203,34 +193,25 @@ function Node(model, config){
 		// TODO: I think this does fuckall -jay
 		if(self.loopy.sidebar.currentPage.target == self){
 			ctx.beginPath();
-			ctx.arc(0, 0, r+40, 0, Math.TAU, false);
+			ctx.arc(0, 0, xs+40, 0, Math.TAU, false);
 //			ctx.fillStyle = HIGHLIGHT_COLOR;
 //			ctx.fill();
 		}
 		
 		// White-gray bubble with colored border
 		ctx.beginPath();
-		if (self.isRect) {
+		// TODO: Legacy code
+		/*if (self.isRect) {
 			ctx.rect(-r*xs, -r*ys, (r*2)*xs, (r*2)*ys);
-			// Lazy fix for text
-			r = xs;
 		} else {
 			ctx.arc(0, 0, r-2, 0, Math.TAU, false);
-		}
+		}*/
+		self.shape.draw(ctx, self);
 		ctx.fillStyle = "#fff";
 		ctx.fill();
 		ctx.lineWidth = 6;
 		ctx.strokeStyle = color;
 		ctx.stroke();
-		
-		// Circle radius
-		var _circleRadiusGoto = r*(self.value+1);
-		_circleRadius = _circleRadius*0.75 + _circleRadiusGoto*0.25;
-
-		// RADIUS IS (ATAN) of VALUE?!?!?!
-		var _r = Math.atan(self.value*5);
-		_r = _r/(Math.PI/2);
-		_r = (_r+1)/2;
 
 		// INFINITE RANGE FOR RADIUS
 		// linear from 0 to 1, asymptotic otherwise.
@@ -265,12 +246,7 @@ function Node(model, config){
 		//var width = ctx.measureText(self.label).width;
 
 		ctx.fillStyle = textColor;
-		if (self.isRect) {
-			_boundedText(ctx, self.label, 0, 0, xs*4, ys*4, 40);
-		} else {
-			var size = Math.sqrt(2 * (r*r));
-			_boundedText(ctx, self.label, 0, 0, size ,size, 20);
-		}
+		self.shape.drawText(ctx, self)
 
 		// Restore
 		ctx.restore();
@@ -280,16 +256,18 @@ function Node(model, config){
 	// Create a copy of this node
 	self.cloneNode = function() {
 
-		var offset = Math.max(Math.max(self.xscale, self.radius*2), self.yscale) + 20;
+		var offset = Math.max(self.width, self.height) + 20;
 		var theta  = Math.random() * Math.TAU; 
 
 		var newNode = loopy.model.addNode({
 			x: self.x + offset*Math.cos(theta),
 			y: self.y + offset*Math.sin(theta),
-			radius: self.radius,
-			xscale: self.xscale,
-			yscale: self.yscale,
-			isRect: self.isRect,
+			width: self.width,
+			height: self.height,
+			shape: self.shape,
+			label: self.label, 	// Copies the label
+			hue: self.hue, 		// Copies the color
+			textHue: self.textHue,
 		});
 	
 		loopy.sidebar.edit(newNode);
@@ -320,22 +298,26 @@ function Node(model, config){
 	//////////////////////////////////////
 
 	self.isPointInNode = function(x, y, buffer){
-		buffer = buffer || 0;
+		/*buffer = buffer || 0;
 		if (self.isRect) {
-			var dx = (self.xscale/2)*self.radius;
-			var dy = (self.yscale/2)*self.radius;
+			var dx = (self.width/2);
+			var dy = (self.height/2);
 			return _isPointInBox(x, y, self.x-dx, self.y-dy, dx*2, dy*2);
 		} else {
 			return _isPointInCircle(x, y, self.x, self.y, self.radius+buffer);
-		}
+		}*/
+		return self.shape.isMouseInside(self);
 	};
 
-	self.getBoundingBox = function(){
+	self.getBoundingBox = function() {
+		var dx = (self.width/2);
+		var dy = (self.height/2);
+
 		return {
-			left: self.x - self.radius,
-			top: self.y - self.radius,
-			right: self.x + self.radius,
-			bottom: self.y + self.radius
+			left: self.x - dx,
+			top: self.y - dy,
+			right: self.x + dx,
+			bottom: self.y + dy
 		};
 	};
 

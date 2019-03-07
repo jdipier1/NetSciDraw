@@ -70,12 +70,8 @@ function Sidebar(loopy){
 			label: "Increase Size",
 			//label: "delete circle",
 			onclick: function(node){
-				if (node.isRect) {
-					node.xscale += 10;
-					node.yscale += 10;
-				} else {
-					node.radius += 10;
-				}
+				node.width += 10;
+				node.height += 10;
 			}
 		}));
 
@@ -83,12 +79,8 @@ function Sidebar(loopy){
 			label: "Decrease Size",
 			//label: "delete circle",
 			onclick: function(node){
-				if (node.isRect) {
-					node.xscale = Math.max(node.xscale - 10, 15);
-					node.yscale = Math.max(node.yscale - 10, 15);
-				} else {
-					node.radius = Math.max(node.radius - 10, 15);
-				}
+				node.width -= 10;
+				node.height -= 10;
 			}
 		}));
 
