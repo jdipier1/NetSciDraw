@@ -15,7 +15,7 @@ Node.COLORS = {
 };
 
 Node.DEFAULT_RADIUS = 60;
-Node.scale = 1.0;
+Node.scale = 1.0; 
 
 function Node(model, config) {
 
@@ -262,11 +262,20 @@ function Node(model, config) {
 		var newNode = loopy.model.addNode({
 			x: self.x + offset*Math.cos(theta),
 			y: self.y + offset*Math.sin(theta),
+<<<<<<< HEAD
 			width: self.width,
 			height: self.height,
 			shape: self.shape,
 			label: self.label, 	// Copies the label
 			hue: self.hue, 		// Copies the color
+=======
+			radius: self.radius,
+			xscale: self.xscale,
+			yscale: self.yscale,
+			isRect: self.isRect,
+			label: self.label, // Copies the label
+			hue: self.hue, // Copies the color
+>>>>>>> eef79fc0916c183b306990759a7316fec29c4808
 			textHue: self.textHue,
 		});
 	
