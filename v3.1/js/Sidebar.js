@@ -42,7 +42,7 @@ function Sidebar(loopy){
 			label: "Color",
 			options: [0,1,2,3,4,5,6],
 			oninput: function(value){
-				//Node.defaultHue = value;
+				Node.defaultHue = value;
 			}
 		}));
 //		page.addComponent("init", new ComponentSlider({
@@ -118,15 +118,15 @@ function Sidebar(loopy){
 			html:
 			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<hr/>"
 		}));
-		page.addComponent("border", new ComponentSlider({
+		page.addComponent("hues", new ComponentSlider({
 			bg: "color",
 			label: "Color",
 			options: [7,8,9,10,11,12,13],
 			oninput: function(value){
 				Edge.defaultHues = value;
 			}
-		}));
 
+		}));
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
@@ -134,18 +134,7 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
-//		page.addComponent("strength", new ComponentSlider({
-//			bg: "strength",
-//			label: "<br><br>Relationship:",
-//			//label: "Relationship:",
-//			options: [1, -1],
-//			oninput: function(value){
-//				Edge.defaultStrength = value;
-//			}
-//		}));
-//		page.addComponent(new ComponentHTML({ //CAN ADD THIS AS A NOTE IF WE WANT
-//			html: "Color the arrows!"
-//		}));
+
 		page.addComponent(new ComponentButton({
 			//label: "delete edge",
 			label: "Delete Arrow",
@@ -233,16 +222,8 @@ function Sidebar(loopy){
 			"<img src = '../NSD.png' width='195' height='90' border='2'></img>"+
 			"<br>"+
 			"<br>"+
-
-
-//			"<span class='mini_button' onclick='publish(\"modal\",[\"examples\"])'>see examples</span> "+
-//			"<span class='mini_button' onclick='publish(\"modal\",[\"howto\"])'>how to</span> "+
-//			"<span class='mini_button' onclick='publish(\"modal\",[\"credits\"])'>credits</span><br><br>"+
-
 			"<hr/>"+ "<br>"+
 
-
-			
 			"<style>"+
 			".button {"+
 			  "background-color: #555555;"+
@@ -257,12 +238,10 @@ function Sidebar(loopy){
 			  "cursor: pointer;"+
 			  "width: 68%"+
 			"}"+
-
 			".button:hover {"+
   			"background-color: #ddd;"+
   			"color: black;"+
   			"}"+
-
 			"</style>"+
 
 			"<span class='button' onclick='publish(\"modal\",[\"save_link\"])'>Save Your Work!</span> <br><br>"+
