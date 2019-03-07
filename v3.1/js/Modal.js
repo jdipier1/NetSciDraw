@@ -140,7 +140,7 @@ function Modal(loopy){
 		page.addComponent(new ComponentHTML({
 			html: ""+
 			"Here's a short clip to get you started!<br><br>"+
-			"<video width='760' height='450' autoplay loop>"+
+			"<video width='760' height='450' loop controls>"+
 			"<source src='../tutorial.mp4' type='video/mp4'>"+
 			"</video>"
 		
