@@ -91,7 +91,17 @@ function Sidebar(loopy){
 				}
 			}
 		}));
-		
+
+		page.addComponent(new ComponentButton({
+			label: "Duplicate",
+			onclick: function(node){
+				var cln = node.cloneNode(true);
+				node.cln();
+
+				self.showPage("Edit");
+			}
+		}));
+
 		page.addComponent(new ComponentButton({
 			//label: "delete edge",
 			label: "Delete",
@@ -101,6 +111,7 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
+
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
