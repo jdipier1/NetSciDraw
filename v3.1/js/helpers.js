@@ -279,10 +279,10 @@ function _isPointInCircle(x, y, cx, cy, radius){
 }
 
 function _isPointInBox(x, y, box){
-	return (x >= _toRelX(box.x)
-		&&  x <= _toRelX(box.x+box.width)
-		&&  y >= _toRelY(box.y*Model.scale)
-		&&  y <= _toRelY(box.y+box.height));
+	return (x >= (box.x)
+		&&  x <= (box.x+box.width)
+		&&  y >= (box.y*Model.scale)
+		&&  y <= (box.y+box.height));
 }
 
 // TODO: Make more use of this???
