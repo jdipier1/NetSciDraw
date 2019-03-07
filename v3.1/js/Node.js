@@ -17,7 +17,7 @@ Node.COLORS = {
 //Node.defaultHue = 0;
 
 Node.DEFAULT_RADIUS = 60;
-Node.scale = 1.0;
+Node.scale = 1.0; 
 
 function Node(model, config){
 
@@ -290,6 +290,9 @@ function Node(model, config){
 			xscale: self.xscale,
 			yscale: self.yscale,
 			isRect: self.isRect,
+			label: self.label, // Copies the label
+			hue: self.hue, // Copies the color
+			textHue: self.textHue,
 		});
 	
 		loopy.sidebar.edit(newNode);
