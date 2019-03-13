@@ -262,20 +262,11 @@ function Node(model, config) {
 		var newNode = loopy.model.addNode({
 			x: self.x + offset*Math.cos(theta),
 			y: self.y + offset*Math.sin(theta),
-<<<<<<< HEAD
 			width: self.width,
 			height: self.height,
 			shape: self.shape,
 			label: self.label, 	// Copies the label
 			hue: self.hue, 		// Copies the color
-=======
-			radius: self.radius,
-			xscale: self.xscale,
-			yscale: self.yscale,
-			isRect: self.isRect,
-			label: self.label, // Copies the label
-			hue: self.hue, // Copies the color
->>>>>>> eef79fc0916c183b306990759a7316fec29c4808
 			textHue: self.textHue,
 		});
 	
@@ -306,16 +297,8 @@ function Node(model, config) {
 	// HELPER METHODS ////////////////////
 	//////////////////////////////////////
 
-	self.isPointInNode = function(x, y, buffer){
-		/*buffer = buffer || 0;
-		if (self.isRect) {
-			var dx = (self.width/2);
-			var dy = (self.height/2);
-			return _isPointInBox(x, y, self.x-dx, self.y-dy, dx*2, dy*2);
-		} else {
-			return _isPointInCircle(x, y, self.x, self.y, self.radius+buffer);
-		}*/
-		return self.shape.isMouseInside(self);
+	self.isPointInNode = function(x, y, buffer) {
+		return self.shape.isPointInside(self, x, y);
 	};
 
 	self.getBoundingBox = function() {

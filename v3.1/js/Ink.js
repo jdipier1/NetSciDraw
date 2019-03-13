@@ -73,11 +73,10 @@ function Ink(loopy){
 		
 
 		// Update last point
-		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
+		self.strokeData.push([Mouse.x/Model.scale, Mouse.y/Model.scale]);
 
-
-		var dx = _roundDown(Mouse.x/Model.scale, 4);
-		var dy = _roundDown(Mouse.y/Model.scale, 4);
+		var dx = _roundDown(Mouse.canvasX, 4);
+		var dy = _roundDown(Mouse.canvasY, 4);
 		// Update primitive
 		if (self.geomEdges.length < 2) {
 			self.geomEdges.push([dx, dy]);
@@ -105,7 +104,7 @@ function Ink(loopy){
 			var newDir	= _normalize([dx - g2[0], dy - g2[1]]);
 			var dp = _dotProduct(self.geomDir, newDir);
 
-			if (dp > .65) {
+			if (dp > .5) {
 				if (dp > .8) {
 					extendGeomEdge(dx, dy);
 				} else {
@@ -137,7 +136,7 @@ function Ink(loopy){
 		self.strokeData = [];
 		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
 		self.geomEdges = [];
-		self.geomEdges.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
+		self.geomEdges.push([Mouse.canvasX, Mouse.canvasY]);
 		self.geomScore = 0;
 
 		// Draw to canvas!
@@ -174,13 +173,13 @@ function Ink(loopy){
 
 		// Started in a node?
 		var startPoint = self.strokeData[0];
-		var startNode = loopy.model.getNodeByPoint(startPoint[0], startPoint[1]);
-		if(!startNode) startNode=loopy.model.getNodeByPoint(startPoint[0], startPoint[1], 20); // try again with buffer
+		var startNode = loopy.model.getNodeByPoint(startPoint[0]-(Model.x/2), startPoint[1]-(Model.y/2));
+		if(!startNode) startNode=loopy.model.getNodeByPoint(startPoint[0]-(Model.x/2), startPoint[1]-(Model.y/2), 20); // try again with buffer
 
 		// Ended in a node?
 		var endPoint = self.strokeData[self.strokeData.length-1];
-		var endNode = loopy.model.getNodeByPoint(endPoint[0], endPoint[1]);
-		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint[0], endPoint[1], 40); // try again with buffer
+		var endNode = loopy.model.getNodeByPoint(endPoint[0]-(Model.x/2), endPoint[1]-(Model.y/2));
+		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint[0]-(Model.x/2), endPoint[1]-(Model.y/2), 40); // try again with buffer
 
 		// EDGE: started AND ended in nodes
 		if(startNode && endNode){
@@ -249,7 +248,7 @@ function Ink(loopy){
 		}
 
 		// NODE: did NOT start in a node.
-		if(!startNode && self.geomIsClosed){
+		if(!startNode/* && self.geomIsClosed*/){
 
 			// Just roughly make a circle the size of the bounds of the circle
 			var bounds = _getBounds(self.geomEdges);
@@ -262,7 +261,7 @@ function Ink(loopy){
 			bounds.width *= Model.scale;
 			bounds.height *= Model.scale;
 
-			console.log(bounds.left);
+			console.log("counted corners: "+self.geomScore);
 
 			var x = ((bounds.left+bounds.right)/2);
 			var y = ((bounds.top+bounds.bottom)/2);
@@ -278,24 +277,35 @@ function Ink(loopy){
 				// LOCK TO JUST SMALLEST CIRCLE.
 				r = (((bounds.right-bounds.left)/4)+(bounds.bottom-bounds.top)/4); //change made from min radius 
 				
-				// Make that node!
-				if (self.geomScore > 3) {
-					var newNode = loopy.model.addNode({
-						x: x,
-						y: y,
-						width: bounds.right - bounds.left,		// in addition to above, comment out this line
-						height: bounds.bottom - bounds.top,		// and this line
-						shape: Shapes.RECTANGLE,
-					});
-				} else {
-					var newNode = loopy.model.addNode({
-						x: x,
-						y: y,
-						width: r,
-						height: r,
-						shape: Shapes.CIRCLE,
-					});
+				// Make the node
+				var detectedShape = Shapes.CIRCLE;
+				var defaultWidth = bounds.right - bounds.left;
+				var defaultHeight = bounds.bottom - bounds.top;
+				switch(self.geomScore) {
+					case 3:
+					detectedShape = Shapes.TRIANGLE;
+					break;
+					
+					case 4:
+					detectedShape = Shapes.RECTANGLE;
+					break;
+
+					case 5:
+					detectedShape = Shapes.STAR;
+					break;
+
+					default:
+					defaultWidth = r;
+					defaultHeight = r;
 				}
+
+				var newNode = loopy.model.addNode({
+					x: x-(Model.x/2),
+					y: y-(Model.y/2),
+					width: defaultWidth,		// in addition to above, comment out this line
+					height: defaultHeight,		// and this line
+					shape: detectedShape,
+				});
 							
 				// Edit it immediately
 				loopy.sidebar.edit(newNode);

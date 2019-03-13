@@ -279,10 +279,16 @@ function _isPointInCircle(x, y, cx, cy, radius){
 }
 
 function _isPointInBox(x, y, box){
+	/*
 	return (x >= (box.x)
 		&&  x <= (box.x+box.width)
 		&&  y >= (box.y*Model.scale)
-		&&  y <= (box.y+box.height));
+		&&  y <= (box.y+box.height));*/
+
+		return (x >= _toRelX(box.x)
+		&&  x <= _toRelX(box.x+box.width)
+		&&  y >= _toRelY(box.y*Model.scale)
+		&&  y <= _toRelY(box.y+box.height));
 }
 
 // TODO: Make more use of this???
@@ -335,9 +341,10 @@ function _shiftArray(array, shiftIndex){
 }
 
 function _translate(ctx, x, y) {
-	ctx.translate(Model.canvasCenterX, Model.canvasCenterY);
-	ctx.scale(Model.scale, Model.scale);
-	ctx.translate(x - Model.canvasCenterX,y - Model.canvasCenterY);
+	//ctx.translate(Model.canvasCenterX, Model.canvasCenterY);
+	//ctx.scale(Model.scale, Model.scale);
+	//ctx.translate(x + Model.x, y + Model.y);
+	ctx.translate(x,y);
 }
 
 // TODO: Rid of these ugly functions

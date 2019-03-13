@@ -88,3 +88,32 @@ function _distance(x1, y1, x2, y2) {
 function _lerp(start, end, amount) {
     return start + (amount * (end - start));
 }
+
+/** Is Point in hull
+ * 
+ * Checked if x,y is within a convex hull with points [x1,y1 x2,y2, ...]
+ * Points should be defined counter-clockwise
+ * 
+ * @param {*} x the x position of the point
+ * @param {*} y the y position of the point
+ * @param {*} points the points of the convex hull, defined counter-clockwise, as an array of reals (x1, y1, x2, y2, ...)
+ * 
+ * Note: points should be divisible by 2 and have a length grater than 3
+ */
+function _isPointInHull(x, y, points) {
+    for(var i = 0; i < points.length+4; i += 2) {
+        if (_signedDistanceTo(x,y, _toRelX(points[i]), _toRelY(points[i+1]), _toRelX(points[i+2]), _toRelY(points[i+3])) < 0) {
+            return false;
+        }
+    }
+
+    if (_signedDistanceTo(x,y, _toRelX(points[points.length-2]), _toRelY(points[points.length-1]), _toRelX(points[0]), _toRelY(points[1])) < 0) {
+        return false;
+    }
+
+    return true;
+}
+
+function _signedDistanceTo(x, y, x1, y1, x2, y2) {
+    return (x - x2) * (y1 - y2) - (x1 - x2) * (y - y2);
+}

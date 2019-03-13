@@ -53,6 +53,10 @@ Mouse.init = function(target){
 		Mouse.x = mx;
 		Mouse.y = my;
 
+		// The mouse's position relative to the canvas
+		Mouse.canvasX = /*-Mouse.contextCenterX + */(Mouse.x-(Model.x/2));
+		Mouse.canvasY = /*-Mouse.contextCenterY + */(Mouse.y-(Model.y/2));
+
 		Mouse.moved = true;
 		publish("mousemove");
 
@@ -81,7 +85,7 @@ Mouse.init = function(target){
 };
 
 Mouse.onPinchMove = function(e) {
-	if (Mouse.initPinchDist === -1) {
+	if (Mouse.initPinch-Dist === -1) {
 		Mouse.initPinchDist = Math.hypot(
 			e.touches[0].pageX - e.touches[1].pageX,
 			e.touches[0].pageY - e.touches[1].pageY);

@@ -62,7 +62,6 @@ function Toolbar(loopy){
 		tooltip: "PE(N)CIL",
 		callback: function(){
 			self.setTool("ink");
-			Model.targetScale = 1.0;
 		}
 	});
 
@@ -71,7 +70,6 @@ function Toolbar(loopy){
 		tooltip: "(T)EXT",
 		callback: function(){
 			self.setTool("label");
-			Model.targetScale = 1.0;
 		}
 	});
 
@@ -80,7 +78,6 @@ function Toolbar(loopy){
 		tooltip: "MO(V)E",
 		callback: function(){
 			self.setTool("drag");
-			Model.targetScale = 1.0;
 		}
 	});
 
@@ -89,7 +86,6 @@ function Toolbar(loopy){
 		tooltip: "(E)RASER",
 		callback: function(){
 			self.setTool("erase");
-			Model.targetScale = 1.0;
 		}
 	});
 
