@@ -19,7 +19,8 @@ function Label(model, config){
 		x: 0,
 		y: 0,
 		text: "Enter Text Here",
-		hues: 20
+		hues: 20,
+		fontSize: Label.FONTSIZE
 	});
 
 	// Draw
@@ -57,7 +58,7 @@ function Label(model, config){
 		19: "#A97FFF", // purple
 		20: "#000000", // black
 	};
-		ctx.font = "100 "+Label.FONTSIZE+"px sans-serif";
+		ctx.font = "100 "+self.fontSize+"px sans-serif";
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 		var colorlabel = Label.COLORS[self.hues];
@@ -65,11 +66,11 @@ function Label(model, config){
 
 		// ugh new lines are a PAIN.
 		var lines = self.breakText();
-		ctx.translate(0, -(Label.FONTSIZE*lines.length)/2);
+		ctx.translate(0, -(self.fontSize*lines.length)/2);
 		for(var i=0; i<lines.length; i++){
 			var line = lines[i];
 			ctx.fillText(line, 0, 0);
-			ctx.translate(0, Label.FONTSIZE);
+			ctx.translate(0, self.fontSize);
 		}
 
 		// Restore
@@ -90,6 +91,20 @@ function Label(model, config){
 		publish("kill",[self]);
 
 	};
+
+	// Create a copy of this node
+	self.cloneLabel = function() {
+
+		var newLabel = loopy.model.addLabel({
+			x: self.x ,
+			y: self.y + self.fontSize*2,
+			text: self.text,
+			hues: self.hues, 		// Copies the color
+			fontSize: self.fontSize,
+		});
+
+		loopy.sidebar.edit(newLabel);
+	}
 
 	//////////////////////////////////////
 	// HELPER METHODS ////////////////////
@@ -115,14 +130,14 @@ function Label(model, config){
 
 		// Dimensions, then:
 		var w = maxWidth;
-		var h = (Label.FONTSIZE*lines.length)/2;
+		var h = (self.fontSize*lines.length)/2;
 
 		// Bounds, then:
 		return {
 			x: self.x-w/2,
-			y: self.y-h/2-Label.FONTSIZE/2,
+			y: self.y-h/2-self.fontSize/2,
 			width: w,
-			height: h+Label.FONTSIZE/2
+			height: h+self.fontSize/2
 		};
 	};
 

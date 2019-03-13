@@ -198,6 +198,28 @@ function Sidebar(loopy){
 			}
 
 		};
+
+		page.addComponent(new ComponentButton({
+			label: "Increase Size",
+			onclick: function(label){
+				label.fontSize += 20;
+			}
+		}));
+
+		page.addComponent(new ComponentButton({
+			label: "Decrease Size",
+			onclick: function(label){
+				label.fontSize = Math.max(20, label.fontSize - 20);
+			}
+		}));
+
+		page.addComponent(new ComponentButton({
+			label: "Duplicate",
+			onclick: function(label){
+				label.cloneLabel();
+			}
+		}));
+
 		page.addComponent(new ComponentButton({
 			label: "Delete Label",
 			onclick: function(label){
@@ -205,6 +227,7 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
+
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
