@@ -1,7 +1,5 @@
 /**********************************
-
 SIDEBAR CODE
-
 **********************************/
 function Sidebar(loopy){
 
@@ -70,12 +68,8 @@ function Sidebar(loopy){
 			label: "Increase Size",
 			//label: "delete circle",
 			onclick: function(node){
-				if (node.isRect) {
-					node.xscale += 10;
-					node.yscale += 10;
-				} else {
-					node.radius += 10;
-				}
+				node.width += 10;
+				node.height += 10;
 			}
 		}));
 
@@ -83,12 +77,8 @@ function Sidebar(loopy){
 			label: "Decrease Size",
 			//label: "delete circle",
 			onclick: function(node){
-				if (node.isRect) {
-					node.xscale = Math.max(node.xscale - 10, 15);
-					node.yscale = Math.max(node.yscale - 10, 15);
-				} else {
-					node.radius = Math.max(node.radius - 10, 15);
-				}
+				node.width -= 10;
+				node.height -= 10;
 			}
 		}));
 
@@ -206,7 +196,7 @@ function Sidebar(loopy){
 			}
 
 		};
-
+		
 		page.addComponent(new ComponentButton({
 			label: "Increase Size",
 			onclick: function(label){
@@ -228,7 +218,6 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
-
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
@@ -277,7 +266,6 @@ function Sidebar(loopy){
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
-			"<hr/>"+ "<br>"+
 			"<style='font-size:1.4em'>Click the pencil icon and use your finger or mouse to draw<br><br>"+
 			
 			"Type in your drawings to organize your thoughts<br><br>"+
