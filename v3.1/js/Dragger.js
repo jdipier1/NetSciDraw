@@ -21,7 +21,7 @@ function Dragger(loopy){
 		if(self.loopy.tool!=Loopy.TOOL_DRAG) return;
 
 		// Any node under here? If so, start dragging!
-		var dragNode = loopy.model.getNodeByPoint(Mouse.x, Mouse.y);
+		var dragNode = loopy.model.getNodeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragNode){
 			self.dragging = dragNode;
 			self.offsetX = Mouse.x - dragNode.x;
@@ -31,7 +31,7 @@ function Dragger(loopy){
 		}
 
 		// Any label under here? If so, start dragging!
-		var dragLabel = loopy.model.getLabelByPoint(Mouse.x, Mouse.y);
+		var dragLabel = loopy.model.getLabelByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragLabel){
 			self.dragging = dragLabel;
 			self.offsetX = Mouse.x - dragLabel.x;
@@ -41,7 +41,7 @@ function Dragger(loopy){
 		}
 
 		// Any edge under here? If so, start dragging!
-		var dragEdge = loopy.model.getEdgeByPoint(Mouse.x, Mouse.y);
+		var dragEdge = loopy.model.getEdgeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragEdge){
 			self.dragging = dragEdge;
 			self.offsetX = Mouse.x - dragEdge.labelX;
@@ -50,7 +50,12 @@ function Dragger(loopy){
 			return;
 		}
 
+		// Dragging canvas
+		self.dragging = loopy.model;
+		self.offsetX = Mouse.x - Model.x;
+		self.offsetY = Mouse.y - Model.y;
 	});
+
 	subscribe("mousemove",function(){
 
 		// ONLY WHEN EDITING w DRAG
@@ -74,7 +79,7 @@ function Dragger(loopy){
 		}
 
 		// If you're dragging an EDGE, move it around!
-		if(self.dragging && self.dragging._CLASS_=="Edge"){
+		else if(self.dragging && self.dragging._CLASS_=="Edge"){
 
 			// Model's been changed!
 			publish("model/changed");
@@ -123,7 +128,7 @@ function Dragger(loopy){
 		}
 
 		// If you're dragging a LABEL, move it around!
-		if(self.dragging && self.dragging._CLASS_=="Label"){
+		else if(self.dragging && self.dragging._CLASS_=="Label"){
 
 			// Model's been changed!
 			publish("model/changed");
@@ -135,6 +140,13 @@ function Dragger(loopy){
 			// update coz visual glitches
 			loopy.model.update();
 			
+		}
+
+		// Dragging canvas
+		else if (self.dragging == loopy.model) {
+			Model.x = Mouse.x - self.offsetX;
+			Model.y = Mouse.y - self.offsetY;
+			loopy.model.update();
 		}
 
 	});

@@ -17,7 +17,7 @@ function Eraser(loopy){
 
 		// Erase any nodes under here
 		if(Mouse.pressed || clicked){
-			var eraseNode = loopy.model.getNodeByPoint(Mouse.x, Mouse.y);
+			var eraseNode = loopy.model.getNodeByPoint(Mouse.canvasX, Mouse.canvasY);
 			if(eraseNode) eraseNode.kill();
 		}
 
@@ -27,13 +27,13 @@ function Eraser(loopy){
 
 		// Erase any edges under here
 		if(Mouse.pressed || clicked){
-			var eraseEdge = loopy.model.getEdgeByPoint(Mouse.x, Mouse.y, true);
+			var eraseEdge = loopy.model.getEdgeByPoint(Mouse.canvasX, Mouse.canvasY, true);
 			if(eraseEdge) eraseEdge.kill();
 		}
 
 		// Erase any labels under here
 		if(Mouse.pressed || clicked){
-			var eraseLabel = loopy.model.getLabelByPoint(Mouse.x, Mouse.y);
+			var eraseLabel = loopy.model.getLabelByPoint(Mouse.canvasX, Mouse.canvasY);
 			if(eraseLabel) eraseLabel.kill();
 		}
 

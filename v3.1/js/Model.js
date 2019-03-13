@@ -9,6 +9,9 @@ Model.targetScale = 1.0;
 Model.width = 1;
 Model.height = 1;
 
+Model.x = 0;
+Model.y = 0;
+
 function Model(loopy){
 
 	var self = this;
@@ -27,6 +30,9 @@ function Model(loopy){
 	Model.canvasCenterY = canvas.height/2;
 	Model.contextCenterX = ctx.canvas.clientWidth/2;
 	Model.contextCenterY = ctx.canvas.clientHeight/2;
+
+	//Model.x = -Model.canvasCenterX;
+	//Model.y = -Model.canvasCenterY;
 
 	///////////////////
 	// NODES //////////
@@ -215,7 +221,6 @@ function Model(loopy){
 		// Translate
 		ctx.save();
 
-		
 		// Translate to center, (translate, scale, translate) to expand to size
 		var canvasses = document.getElementById("canvasses");
 		var CW = canvasses.clientWidth - _PADDING - _PADDING;
@@ -224,11 +229,11 @@ function Model(loopy){
 		var ty = loopy.offsetY*2;
 		tx -= CW+_PADDING;
 		ty -= CH+_PADDING;
-		var s = loopy.offsetScale;
+		var s = loopy.offsetScale * Model.scale;
 		tx = s*tx;
 		ty = s*ty;
-		tx += CW+_PADDING;
-		ty += CH+_PADDING;
+		tx += CW+_PADDING + Model.x;
+		ty += CH+_PADDING + Model.y;
 		if(loopy.embedded){
 			tx += _PADDING; // dunno why but this is needed
 			ty += _PADDING; // dunno why but this is needed
@@ -240,23 +245,6 @@ function Model(loopy){
 		for(var i=0;i<self.edges.length;i++) self.edges[i].draw(ctx);
 		for(var i=0;i<self.nodes.length;i++) self.nodes[i].draw(ctx);
 
-		ctx.font = "100 "+Label.FONTSIZE+"px sans-serif";
-		ctx.fillText(""+Mouse.x + ", " + Mouse.y, 2*Mouse.x, 2*Mouse.y-64)
-
-		ctx.beginPath();
-		ctx.rect(
-			3+Model.canvasCenterX-(Model.canvasCenterX*Model.scale),
-			3+Model.canvasCenterY-(Model.canvasCenterY*Model.scale),
-			-3+(2*Model.canvasCenterX*Model.scale),
-			-3+(2*Model.canvasCenterY*Model.scale));
-			ctx.rect(
-				2*_fromRelX(Mouse.x)-12, 2*_fromRelY(Mouse.y)-12, 24, 24);
-			//ctx.rect(0, 0, Model.getCanvas().width*Model.scale, Model.getCanvas().height*Model.scale);
-		//ctx.fillStyle = "#fff";
-		//ctx.fill();
-		ctx.lineWidth = 6;
-		ctx.strokeStyle = "#000";
-		ctx.stroke();
 		// Restore
 		ctx.restore();
 	};
