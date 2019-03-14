@@ -266,6 +266,7 @@ function Sidebar(loopy){
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
+			"<hr/>"+ "<br>"+
 			"<style='font-size:1.4em'>Click the pencil icon and use your finger or mouse to draw<br><br>"+
 			
 			"Type in your drawings to organize your thoughts<br><br>"+
