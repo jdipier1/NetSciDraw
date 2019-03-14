@@ -67,6 +67,7 @@ function Ink(loopy){
 		ctx.beginPath();
 		ctx.moveTo(lastPoint[0]*2, lastPoint[1]*2);
 		ctx.lineTo(Mouse.x/Model.scale*2, Mouse.y/Model.scale*2);
+		//ctx.lineWidth = 6;
 		ctx.stroke();
 		ctx.restore();
 
@@ -75,8 +76,8 @@ function Ink(loopy){
 		// Update last point
 		self.strokeData.push([Mouse.x/Model.scale, Mouse.y/Model.scale]);
 
-		var dx = _roundDown(Mouse.canvasX, 4);
-		var dy = _roundDown(Mouse.canvasY, 4);
+		var dx = _roundDown(Mouse.x/Model.scale, 4);
+		var dy = _roundDown(Mouse.y/Model.scale, 4);
 		// Update primitive
 		if (self.geomEdges.length < 2) {
 			self.geomEdges.push([dx, dy]);
@@ -136,7 +137,7 @@ function Ink(loopy){
 		self.strokeData = [];
 		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
 		self.geomEdges = [];
-		self.geomEdges.push([Mouse.canvasX, Mouse.canvasY]);
+		self.geomEdges.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
 		self.geomScore = 0;
 
 		// Draw to canvas!
@@ -258,8 +259,8 @@ function Ink(loopy){
 			bounds.right = (bounds.right);
 			bounds.top = (bounds.top);
 			bounds.bottom = (bounds.bottom);
-			bounds.width *= Model.scale;
-			bounds.height *= Model.scale;
+			//bounds.width *= Model.scale;
+			//bounds.height *= Model.scale;
 
 			console.log("counted corners: "+self.geomScore);
 
@@ -299,9 +300,15 @@ function Ink(loopy){
 					defaultHeight = r;
 				}
 
+				var cw = Model.canvasCenterX;//(document.getElementById("canvasses").clientWidth/* - _PADDING - _PADDING*/)/2.0;
+				var ch = Model.canvasCenterY;//(document.getElementById("canvasses").clientHeight/* - _PADDING_BOTTOM - _PADDING*/)/2.0;
+
+				var xOffset = ((Model.scale * cw) - cw);
+				var yOffset = ((Model.scale * ch) - ch);
+
 				var newNode = loopy.model.addNode({
-					x: x-(Model.x/2),
-					y: y-(Model.y/2),
+					x: (-Model.x/2) + xOffset + x,
+					y: (-Model.y/2) + yOffset + y,
 					width: defaultWidth,		// in addition to above, comment out this line
 					height: defaultHeight,		// and this line
 					shape: detectedShape,

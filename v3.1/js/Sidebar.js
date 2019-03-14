@@ -137,6 +137,20 @@ function Sidebar(loopy){
 		}));
 
 		page.addComponent(new ComponentButton({
+			label: "Increase Size",
+			onclick: function(edge){
+				edge.thickness = Math.min(16, edge.thickness + 2);
+			}
+		}));
+
+		page.addComponent(new ComponentButton({
+			label: "Decrease Size",
+			onclick: function(edge){
+				edge.thickness = Math.max(2, edge.thickness - 2);
+			}
+		}));
+
+		page.addComponent(new ComponentButton({
 			//label: "delete edge",
 			label: "Delete Arrow",
 			//label: "delete relationship",
@@ -145,6 +159,7 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
+
 		self.addPage("Edge", page);
 	})();
 
@@ -196,18 +211,25 @@ function Sidebar(loopy){
 			}
 
 		};
-		
+
 		page.addComponent(new ComponentButton({
 			label: "Increase Size",
 			onclick: function(label){
-				Label.FONTSIZE += 10;
+				label.fontSize += 20;
 			}
 		}));
 
 		page.addComponent(new ComponentButton({
 			label: "Decrease Size",
 			onclick: function(label){
-				Label.FONTSIZE -= 10;
+				label.fontSize = Math.max(20, label.fontSize - 20);
+			}
+		}));
+
+		page.addComponent(new ComponentButton({
+			label: "Duplicate",
+			onclick: function(label){
+				label.cloneLabel();
 			}
 		}));
 
@@ -218,6 +240,7 @@ function Sidebar(loopy){
 				self.showPage("Edit");
 			}
 		}));
+
 		page.addComponent(new ComponentButton({
 			header: true,
 			label: "Back to Home",
