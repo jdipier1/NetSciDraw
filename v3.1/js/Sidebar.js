@@ -211,26 +211,17 @@ function Sidebar(loopy){
 			}
 
 		};
-<<<<<<< HEAD
 
 		page.addComponent(new ComponentButton({
 			label: "Increase Size",
 			onclick: function(label){
 				label.fontSize += 20;
-=======
-		
-		page.addComponent(new ComponentButton({
-			label: "Increase Size",
-			onclick: function(label){
-				Label.FONTSIZE += 10;
->>>>>>> 63a0cd90f8176d2e056da2f0eefb2d15b18964bc
 			}
 		}));
 
 		page.addComponent(new ComponentButton({
 			label: "Decrease Size",
 			onclick: function(label){
-<<<<<<< HEAD
 				label.fontSize = Math.max(20, label.fontSize - 20);
 			}
 		}));
@@ -239,9 +230,6 @@ function Sidebar(loopy){
 			label: "Duplicate",
 			onclick: function(label){
 				label.cloneLabel();
-=======
-				Label.FONTSIZE -= 10;
->>>>>>> 63a0cd90f8176d2e056da2f0eefb2d15b18964bc
 			}
 		}));
 
