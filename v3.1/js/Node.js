@@ -194,8 +194,8 @@ function Node(model, config) {
 		if(self.loopy.sidebar.currentPage.target == self){
 			ctx.beginPath();
 			ctx.arc(0, 0, xs+40, 0, Math.TAU, false);
-//			ctx.fillStyle = HIGHLIGHT_COLOR;
-//			ctx.fill();
+			ctx.fillStyle = HIGHLIGHT_COLOR;
+			ctx.fill();
 		}
 		
 		// White-gray bubble with colored border
