@@ -221,7 +221,7 @@ function Model(loopy){
 		// Translate
 		ctx.save();
 
-		// Translate to center, (translate, scale, translate) to expand to size
+		// Translate canvas to center
 		var canvasses = document.getElementById("canvasses");
 		var CW = canvasses.clientWidth - _PADDING - _PADDING;
 		var CH = canvasses.clientHeight - _PADDING_BOTTOM - _PADDING;
@@ -229,9 +229,12 @@ function Model(loopy){
 		var ty = loopy.offsetY*2;
 		tx -= CW+_PADDING;
 		ty -= CH+_PADDING;
+		// Scale
 		var s = loopy.offsetScale * Model.scale;
 		tx = s*tx;
 		ty = s*ty;
+
+		// Translate once more
 		tx += CW+_PADDING + Model.x;
 		ty += CH+_PADDING + Model.y;
 		if(loopy.embedded){

@@ -35,7 +35,7 @@ function Label(model, config){
 		if(self.loopy.sidebar.currentPage.target == self){
 			var bounds = self.getBounds();
 			ctx.save();
-			_translate(ctx, 0, 0);
+			//_translate(ctx, 0, 0);
 			ctx.scale(2,2); // RETINA
 			ctx.beginPath();
 			ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -117,7 +117,7 @@ function Label(model, config){
 	self.getBounds = function(){
 
 		var ctx = self.model.context;
-		ctx.restore();
+		//ctx.restore();
 
 		// Get MAX width...
 		var lines = self.breakText();

@@ -65,7 +65,7 @@ Mouse.init = function(target){
 		Mouse.pressed = false;
 		if(Mouse.startedOnTarget){
 			publish("mouseup");
-			if(!Mouse.moved) publish("mouseclick");
+			//if(!Mouse.moved) publish("mouseclick");
 		}
 		Mouse.moved = false;
 		Mouse.startedOnTarget = false;
@@ -85,7 +85,7 @@ Mouse.init = function(target){
 };
 
 Mouse.onPinchMove = function(e) {
-	if (Mouse.initPinch-Dist === -1) {
+	if (Mouse.initPinchDist === -1) {
 		Mouse.initPinchDist = Math.hypot(
 			e.touches[0].pageX - e.touches[1].pageX,
 			e.touches[0].pageY - e.touches[1].pageY);

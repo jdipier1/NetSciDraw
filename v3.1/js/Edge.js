@@ -26,7 +26,8 @@ function Edge(model, config){
 		arc: 100,
 		rotation: 0,
 		strength: Edge.defaultStrength,
-		hues: 13 // Makes the intitial color of an arrow black
+		hues: 13, // Makes the intitial color of an arrow black
+		thickness: 2
 	});
 
 	// Get my NODES
@@ -421,6 +422,7 @@ function Edge(model, config){
 		ctx.restore();
 
 		// Stroke!
+		ctx.lineWidth = self.thickness;
 		ctx.stroke();
 
 		// Draw label
