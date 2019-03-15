@@ -180,8 +180,6 @@ function Node(model, config) {
 		// Retina
 		var x = (self.x*2);
 		var y = (self.y*2);
-		var xs = self.width*2;
-		var ys = self.height*2;
 		var color = Node.COLORS[self.hue];
 		var textColor = Node.COLORS[self.textHue];
 
@@ -190,12 +188,11 @@ function Node(model, config) {
 		_translate(ctx, x, y+_offset);
 		
 		// DRAW HIGHLIGHT
-		// TODO: I think this does fuckall -jay
-		if(self.loopy.sidebar.currentPage.target == self){
+		if(self.loopy.sidebar.currentPage.target == self) {
 			ctx.beginPath();
-			ctx.arc(0, 0, xs+40, 0, Math.TAU, false);
-//			ctx.fillStyle = HIGHLIGHT_COLOR;
-//			ctx.fill();
+			ctx.arc(0, 0, (self.width*2)+40, 0, Math.TAU, false);
+			ctx.fillStyle = HIGHLIGHT_COLOR;
+			ctx.fill();
 		}
 		
 		// White-gray bubble with colored border

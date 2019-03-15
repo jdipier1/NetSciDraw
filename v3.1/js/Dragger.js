@@ -69,7 +69,6 @@ function Dragger(loopy){
 			publish("model/changed");
 			
 			var node = self.dragging;
-			// TODO: This breaks when Model.scale != 1
 			node.x = (Mouse.x - self.offsetX);
 			node.y = (Mouse.y - self.offsetY);
 
@@ -144,8 +143,8 @@ function Dragger(loopy){
 
 		// Dragging canvas
 		else if (self.dragging == loopy.model) {
-			Model.x = Mouse.x - self.offsetX;
-			Model.y = Mouse.y - self.offsetY;
+			Model.xOffset = Mouse.x - self.offsetX;
+			Model.yOffset = Mouse.y - self.offsetY;
 			loopy.model.update();
 		}
 
@@ -160,7 +159,6 @@ function Dragger(loopy){
 		self.dragging = null;
 		self.offsetX = 0;
 		self.offsetY = 0;
-
 	});
 
 }

@@ -300,15 +300,11 @@ function Ink(loopy){
 					defaultHeight = r;
 				}
 
-				var cw = Model.canvasCenterX;//(document.getElementById("canvasses").clientWidth/* - _PADDING - _PADDING*/)/2.0;
-				var ch = Model.canvasCenterY;//(document.getElementById("canvasses").clientHeight/* - _PADDING_BOTTOM - _PADDING*/)/2.0;
-
-				var xOffset = ((Model.scale * cw) - cw);
-				var yOffset = ((Model.scale * ch) - ch);
+				var p = Model.getPosOnCanvas(x, y);
 
 				var newNode = loopy.model.addNode({
-					x: (-Model.x/2) + xOffset + x,
-					y: (-Model.y/2) + yOffset + y,
+					x: p.x,
+					y: p.y,
 					width: defaultWidth,		// in addition to above, comment out this line
 					height: defaultHeight,		// and this line
 					shape: detectedShape,
