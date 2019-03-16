@@ -63,6 +63,20 @@ Mouse.init = function(target){
 		Mouse.moved = true;
 		publish("mousemove");
 
+		// Mouse wheel
+		window.onwheel = function(e) {
+			e.preventDefault();
+		  
+			if (e.ctrlKey) {
+			 	Model.targetScale += e.deltaY * 0.025;
+			} else {
+				// Your trackpad X and Y positions
+			  	Model.xOffset -= e.deltaX * 30;
+			  	Model.yOffset -= e.deltaY * 30;
+			}
+		  
+			//Mouse.onPinchMove();
+		  };
 	};
 	var _onmouseup = function(){
 		Mouse.pressed = false;

@@ -247,9 +247,9 @@ function Edge(model, config){
 
 		// Arrow buffer...
 		arrowBuffer = 15;
-		arrowDistance = (self.to.width+arrowBuffer)*2;
+		arrowDistance = (self.to.width+arrowBuffer);
 		arrowAngle = arrowDistance/r; // (distance/circumference)*TAU, close enough.
-		beginDistance = (self.from.width+arrowBuffer)*2;
+		beginDistance = (self.from.width+arrowBuffer);
 		beginAngle = beginDistance/r;
 
 		// Arc it!

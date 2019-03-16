@@ -76,8 +76,8 @@ function Ink(loopy){
 		// Update last point
 		self.strokeData.push([Mouse.x/Model.scale, Mouse.y/Model.scale]);
 
-		var dx = _roundDown(Mouse.x/Model.scale, 4);
-		var dy = _roundDown(Mouse.y/Model.scale, 4);
+		var dx = Mouse.x;//_roundDown(Mouse.x/Model.scale, 1);
+		var dy = Mouse.y;//_roundDown(Mouse.y/Model.scale, 1);
 		// Update primitive
 		if (self.geomEdges.length < 2) {
 			self.geomEdges.push([dx, dy]);
@@ -137,7 +137,7 @@ function Ink(loopy){
 		self.strokeData = [];
 		self.strokeData.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
 		self.geomEdges = [];
-		self.geomEdges.push([Mouse.x/Model.scale,Mouse.y/Model.scale]);
+		self.geomEdges.push([Mouse.x,Mouse.y]);
 		self.geomScore = 0;
 
 		// Draw to canvas!
@@ -173,14 +173,14 @@ function Ink(loopy){
 		*************************/
 
 		// Started in a node?
-		var startPoint = self.strokeData[0];
-		var startNode = loopy.model.getNodeByPoint(startPoint[0]-(Model.x/2), startPoint[1]-(Model.y/2));
-		if(!startNode) startNode=loopy.model.getNodeByPoint(startPoint[0]-(Model.x/2), startPoint[1]-(Model.y/2), 20); // try again with buffer
+		var startPoint = Model.getPosOnCanvas(self.strokeData[0][0], self.strokeData[0][1]);
+		var startNode = loopy.model.getNodeByPoint(startPoint.x, startPoint.y);
+		if(!startNode) startNode=loopy.model.getNodeByPoint(startPoint.x, startPoint.y, 20); // try again with buffer
 
 		// Ended in a node?
-		var endPoint = self.strokeData[self.strokeData.length-1];
-		var endNode = loopy.model.getNodeByPoint(endPoint[0]-(Model.x/2), endPoint[1]-(Model.y/2));
-		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint[0]-(Model.x/2), endPoint[1]-(Model.y/2), 40); // try again with buffer
+		var endPoint = Model.getPosOnCanvas(self.strokeData[self.strokeData.length-1][0], self.strokeData[self.strokeData.length-1][1]);
+		var endNode = loopy.model.getNodeByPoint(endPoint.x, endPoint.y);
+		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint.x, endPoint.y, 40); // try again with buffer
 
 		// EDGE: started AND ended in nodes
 		if(startNode && endNode){
@@ -192,9 +192,8 @@ function Ink(loopy){
 			};
 
 			// If it's the same node...
-			if(startNode==endNode){
-
-				// TODO: clockwise or counterclockwise???
+			if(startNode == endNode) {
+			// TODO: clockwise or counterclockwise???
 				// TODO: if the arc DOES NOT go beyond radius, don't make self-connecting edge. also min distance.
 
 				// Find rotation first by getting average point
@@ -212,7 +211,7 @@ function Ink(loopy){
 
 				// Arc & Rotation!
 				edgeConfig.rotation = angle*(360/Math.TAU) + 90;
-				edgeConfig.arc = bounds.right;
+				edgeConfig.arc = bounds.right * Model.scale;
 
 				// ACTUALLY, IF THE ARC IS *NOT* GREATER THAN THE RADIUS, DON'T DO IT.
 				// (and otherwise, make sure minimum distance of radius+25)
@@ -235,8 +234,8 @@ function Ink(loopy){
 				var bounds = _getBounds(rotated);
 				
 				// Arc!
-				if(Math.abs(bounds.top)>Math.abs(bounds.bottom)) edgeConfig.arc = -bounds.top;
-				else edgeConfig.arc = -bounds.bottom;
+				if(Math.abs(bounds.top)>Math.abs(bounds.bottom)) edgeConfig.arc = -bounds.top  * Model.scale;
+				else edgeConfig.arc = -bounds.bottom  * Model.scale;
 
 			}
 
@@ -255,14 +254,12 @@ function Ink(loopy){
 			var bounds = _getBounds(self.geomEdges);
 
 			// TODO: This breaks when Model.scale != 1
-			bounds.left = (bounds.left);
-			bounds.right = (bounds.right);
-			bounds.top = (bounds.top);
-			bounds.bottom = (bounds.bottom);
-			//bounds.width *= Model.scale;
-			//bounds.height *= Model.scale;
-
-			console.log("counted corners: "+self.geomScore);
+			bounds.left = (bounds.left)/Model.scale;
+			bounds.right = (bounds.right)/Model.scale;
+			bounds.top = (bounds.top)/Model.scale;
+			bounds.bottom = (bounds.bottom)/Model.scale;
+			bounds.width /= Model.scale;
+			bounds.height /= Model.scale;
 
 			var x = ((bounds.left+bounds.right)/2);
 			var y = ((bounds.top+bounds.bottom)/2);
@@ -271,12 +268,8 @@ function Ink(loopy){
 			// Circle can't be TOO smol
 			if(r>15){
 
-				// Snap to radius
-				/*r = Math.round(r/Ink.SNAP_TO_RADIUS)*Ink.SNAP_TO_RADIUS;
-				if(r<Ink.MINIMUM_RADIUS) r=Ink.MINIMUM_RADIUS;*/
-
 				// LOCK TO JUST SMALLEST CIRCLE.
-				r = (((bounds.right-bounds.left)/4)+(bounds.bottom-bounds.top)/4); //change made from min radius 
+				r = (((bounds.right-bounds.left)/4)+(bounds.bottom-bounds.top)/4)*2; //change made from min radius 
 				
 				// Make the node
 				var detectedShape = Shapes.CIRCLE;
@@ -293,6 +286,11 @@ function Ink(loopy){
 
 					case 5:
 					detectedShape = Shapes.STAR;
+					defaultWidth = r;
+					defaultHeight = r*1.25;	// This probably seems weird, but the draw code for stars only uses the width
+											// While the code for connecting edges uses the max of the width and height,
+											// So, to make the arrows connect better to stars, I make the height bigger
+											// than the width. Kinda hacky, but works just fine. -jay
 					break;
 
 					default:
@@ -312,6 +310,8 @@ function Ink(loopy){
 							
 				// Edit it immediately
 				loopy.sidebar.edit(newNode);
+
+				Shapes.checkForSpecials(newNode, self.loopy);
 			}
 
 		}

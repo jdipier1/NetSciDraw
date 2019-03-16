@@ -183,8 +183,8 @@ function Model(loopy){
 
 			Model.scale = _lerp(Model.scale, Model.targetScale, 0.35);
 			// TODO: This is wonky
-			//Model.zoomOffset.x = amount*(Model.canvasCenterX);
-			//Model.zoomOffset.y = amount*(Model.canvasCenterY);	
+			//Model.zoomOffset.x = amount*(canvas.clientWidth);
+			//Model.zoomOffset.y = amount*(canvas.clientHeight);	
 		} else {
 			Model.scale = Model.targetScale;
 			if (Mouse.initPinchDist == -1) {

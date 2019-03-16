@@ -266,8 +266,8 @@ function _configureProperties(self, config, properties){
 function _isPointInCircle(x, y, cx, cy, radius){
 	
 	// Point distance
-	var dx = (_toRelX(cx)-x);
-	var dy = (_toRelY(cy)-y);
+	var dx = (cx)-x;
+	var dy = (cy)-y;
 	var dist2 = dx*dx + dy*dy;
 
 	// My radius
@@ -285,10 +285,10 @@ function _isPointInBox(x, y, box){
 		&&  y >= (box.y*Model.scale)
 		&&  y <= (box.y+box.height));*/
 
-		return (x >= _toRelX(box.x)
-		&&  x <= _toRelX(box.x+box.width)
-		&&  y >= _toRelY(box.y*Model.scale)
-		&&  y <= _toRelY(box.y+box.height));
+		return (x >= box.x
+		&&  x <= (box.x+box.width)
+		&&  y >= (box.y*Model.scale)
+		&&  y <= (box.y+box.height));
 }
 
 // TODO: Make more use of this???

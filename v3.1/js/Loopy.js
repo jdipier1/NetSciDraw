@@ -16,6 +16,8 @@ Loopy.TOOL_LABEL = 3;
 Loopy.REDRAW_TICK_RATE  = 1000 / 60; 	// 60 ticks per second
 Loopy.LOGIC_TICK_RATE	= 1000 / 50;	// 50 ticks per second
 
+Loopy.timer = 0;
+
 function Loopy(config){
 
 	var self = this;
@@ -76,6 +78,7 @@ function Loopy(config){
 
 	// Update
 	self.update = function(){
+		Loopy.timer++;
 		Mouse.update();
 		if(self.wobbleControls>=0) self.wobbleControls--; // wobble
 		if(!self.modal.isShowing){ // modAl
