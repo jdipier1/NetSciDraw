@@ -14,7 +14,7 @@ Node.COLORS = {
 	6: "#000000", // black
 };
 
-Node.DEFAULT_RADIUS = 60;
+Node.DEFAULT_RADIUS = 120;
 Node.scale = 1.0; 
 
 function Node(model, config) {
@@ -180,8 +180,6 @@ function Node(model, config) {
 		// Retina
 		var x = (self.x*2);
 		var y = (self.y*2);
-		var xs = self.width*2;
-		var ys = self.height*2;
 		var color = Node.COLORS[self.hue];
 		var textColor = Node.COLORS[self.textHue];
 
@@ -190,27 +188,20 @@ function Node(model, config) {
 		_translate(ctx, x, y+_offset);
 		
 		// DRAW HIGHLIGHT
-		// TODO: I think this does fuckall -jay
-		if(self.loopy.sidebar.currentPage.target == self){
+		if(self.loopy.sidebar.currentPage.target == self) {
 			ctx.beginPath();
-			ctx.arc(0, 0, xs+40, 0, Math.TAU, false);
-			ctx.fillStyle = HIGHLIGHT_COLOR;
-			ctx.fill();
+			ctx.lineWidth = 60;					// Highlight border size, change to make the highlight bigger/smaller
+			ctx.strokeStyle = HIGHLIGHT_COLOR;
+			self.shape.draw(ctx, self);
+			ctx.stroke();
 		}
-		
-		// White-gray bubble with colored border
+
 		ctx.beginPath();
-		// TODO: Legacy code
-		/*if (self.isRect) {
-			ctx.rect(-r*xs, -r*ys, (r*2)*xs, (r*2)*ys);
-		} else {
-			ctx.arc(0, 0, r-2, 0, Math.TAU, false);
-		}*/
-		self.shape.draw(ctx, self);
-		ctx.fillStyle = "#fff";
-		ctx.fill();
 		ctx.lineWidth = 6;
 		ctx.strokeStyle = color;
+		ctx.fillStyle = "#fff";
+		self.shape.draw(ctx, self);
+		ctx.fill();
 		ctx.stroke();
 
 		// INFINITE RANGE FOR RADIUS

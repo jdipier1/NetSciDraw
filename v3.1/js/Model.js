@@ -12,6 +12,14 @@ Model.height = 1;
 Model.x = 0;
 Model.y = 0;
 
+// This is the translation of the model (ignoring scale offset)
+Model.xOffset = 0;
+Model.yOffset = 0;
+
+Model.zoomOffset = {x: 0, y: 0, initialZoom: 1.0};
+
+Model.transformMatrix = [1, 0, 0, 1, 0, 0];
+
 function Model(loopy){
 
 	var self = this;
@@ -171,9 +179,21 @@ function Model(loopy){
 	self.update = function(){
 
 		if (Math.abs(Model.scale - Model.targetScale) > .005) {
+			var amount = Model.zoomOffset.initialZoom - Model.scale;
+
 			Model.scale = _lerp(Model.scale, Model.targetScale, 0.35);
+			// TODO: This is wonky
+			//Model.zoomOffset.x = amount*(canvas.clientWidth);
+			//Model.zoomOffset.y = amount*(canvas.clientHeight);	
 		} else {
 			Model.scale = Model.targetScale;
+			if (Mouse.initPinchDist == -1) {
+				Model.xOffset += Model.zoomOffset.x;
+				Model.yOffset += Model.zoomOffset.y;
+
+				Model.zoomOffset.x = 0;
+				Model.zoomOffset.y = 0;
+			}
 		}
 
 		// Update edges THEN nodes
@@ -229,10 +249,14 @@ function Model(loopy){
 		var ty = loopy.offsetY*2;
 		tx -= CW+_PADDING;
 		ty -= CH+_PADDING;
+
 		// Scale
 		var s = loopy.offsetScale * Model.scale;
 		tx = s*tx;
 		ty = s*ty;
+
+		Model.x = Model.zoomOffset.x + Model.xOffset;
+		Model.y = Model.zoomOffset.y + Model.yOffset;
 
 		// Translate once more
 		tx += CW+_PADDING + Model.x;
@@ -241,7 +265,12 @@ function Model(loopy){
 			tx += _PADDING; // dunno why but this is needed
 			ty += _PADDING; // dunno why but this is needed
 		}
-		ctx.setTransform(s, 0, 0, s, tx, ty);
+
+		Model.transformMatrix[0] = s;
+		Model.transformMatrix[3] = s;
+		Model.transformMatrix[4] = Model.x;
+		Model.transformMatrix[5] = Model.y;
+		ctx.setTransform(Model.transformMatrix[0], Model.transformMatrix[1], Model.transformMatrix[2], Model.transformMatrix[3], Model.transformMatrix[4], Model.transformMatrix[5]);
 
 		// Draw labels THEN edges THEN nodes
 		for(var i=0;i<self.labels.length;i++) self.labels[i].draw(ctx);
@@ -251,9 +280,6 @@ function Model(loopy){
 		// Restore
 		ctx.restore();
 	};
-
-
-
 
 	//////////////////////////////
 	// SERIALIZE & DE-SERIALIZE //
@@ -562,4 +588,19 @@ function Model(loopy){
 
 	};
 
+	Model.getPosOnCanvas = function(x, y) {
+		var bounds = canvas.getBoundingClientRect();
+		
+		var tPos = [(x - bounds.left)*1,
+					(y - bounds.top)*1];
+	
+		var matrix = Model.transformMatrix;
+		var mx = tPos[0] - matrix[4]/(2.0*Model.scale);
+		var my = tPos[1] - matrix[5]/(2.0*Model.scale);
+	  
+		return {
+			x: mx,
+			y: my
+		}
+	}
 }

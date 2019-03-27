@@ -54,12 +54,30 @@ Mouse.init = function(target){
 		Mouse.y = my;
 
 		// The mouse's position relative to the canvas
-		Mouse.canvasX = /*-Mouse.contextCenterX + */(Mouse.x-(Model.x/2));
-		Mouse.canvasY = /*-Mouse.contextCenterY + */(Mouse.y-(Model.y/2));
+		//Mouse.canvasX = /*-Mouse.contextCenterX + */(Mouse.x-(Model.x/2));
+		//Mouse.canvasY = /*-Mouse.contextCenterY + */(Mouse.y-(Model.y/2));
+		var mousePosOnCanvas = Model.getPosOnCanvas(Mouse.x/Model.scale, Mouse.y/Model.scale);
+		Mouse.canvasX = mousePosOnCanvas.x;
+		Mouse.canvasY = mousePosOnCanvas.y;
 
 		Mouse.moved = true;
 		publish("mousemove");
 
+		// Mouse wheel
+		window.onwheel = function(e) {
+			e.preventDefault();
+		  
+			if (e.ctrlKey) {
+				 Model.targetScale += e.deltaY * 0.025;
+				 Model.targetScale = Math.min(Math.max(Model.targetScale, 0.25), 1);	
+			} else {
+				// Your trackpad X and Y positions
+			  	Model.xOffset += e.deltaX * 30;
+			  	Model.yOffset += e.deltaY * 30;
+			}
+		  
+			//Mouse.onPinchMove();
+		  };
 	};
 	var _onmouseup = function(){
 		Mouse.pressed = false;
@@ -90,6 +108,8 @@ Mouse.onPinchMove = function(e) {
 			e.touches[0].pageX - e.touches[1].pageX,
 			e.touches[0].pageY - e.touches[1].pageY);
 		Mouse.initPinchScale = Model.scale;
+		Model.zoomOffset.initialZoom = Model.scale;
+		console.log(Model.zoomOffset.initialZoom);
 		return;
 	}
 
@@ -98,7 +118,7 @@ Mouse.onPinchMove = function(e) {
 		e.touches[0].pageX - e.touches[1].pageX,
 		e.touches[0].pageY - e.touches[1].pageY);
 
-	Model.targetScale = Math.min(Math.max(Mouse.initPinchScale + ((Mouse.initPinchDist - dist)/Mouse.PINCH_SENSITIVITY), .25), 3);
+	Model.targetScale = Math.min(Math.max(Mouse.initPinchScale + ((Mouse.initPinchDist - dist)/Mouse.PINCH_SENSITIVITY), 0.25), 1);	
 }
 
 Mouse.onPinchEnd = function(e) {

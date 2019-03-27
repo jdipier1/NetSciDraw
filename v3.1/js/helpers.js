@@ -266,8 +266,8 @@ function _configureProperties(self, config, properties){
 function _isPointInCircle(x, y, cx, cy, radius){
 	
 	// Point distance
-	var dx = (_toRelX(cx)-x);
-	var dy = (_toRelY(cy)-y);
+	var dx = (cx)-x;
+	var dy = (cy)-y;
 	var dist2 = dx*dx + dy*dy;
 
 	// My radius
@@ -285,10 +285,10 @@ function _isPointInBox(x, y, box){
 		&&  y >= (box.y*Model.scale)
 		&&  y <= (box.y+box.height));*/
 
-		return (x >= _toRelX(box.x)
-		&&  x <= _toRelX(box.x+box.width)
-		&&  y >= _toRelY(box.y*Model.scale)
-		&&  y <= _toRelY(box.y+box.height));
+		return (x >= box.x
+		&&  x <= (box.x+box.width)
+		&&  y >= (box.y*Model.scale)
+		&&  y <= (box.y+box.height));
 }
 
 // TODO: Make more use of this???
@@ -340,6 +340,7 @@ function _shiftArray(array, shiftIndex){
 	return shifted;
 }
 
+// TODO: Remove _translate, _toRelX, _toRelY, _fromRelX, and _fromRelY. They're not needed
 function _translate(ctx, x, y) {
 	//ctx.translate(Model.canvasCenterX, Model.canvasCenterY);
 	//ctx.scale(Model.scale, Model.scale);
@@ -347,18 +348,17 @@ function _translate(ctx, x, y) {
 	ctx.translate(x,y);
 }
 
-// TODO: Rid of these ugly functions
 function _toRelX(x) {
-	return Model.contextCenterX + ((x - Model.contextCenterX)*Model.scale);
+	return x;//Model.contextCenterX + ((x - Model.contextCenterX)*Model.scale);
 }
 
 function _toRelY(y) {
-	return Model.contextCenterY + ((y - Model.contextCenterY)*Model.scale);
+	return y;//Model.contextCenterY + ((y - Model.contextCenterY)*Model.scale);
 }
 
 function _fromRelX(x) {
 	var left = (Model.contextCenterX - (Model.contextCenterX*Model.scale));
-	return ((x-left)/Model.scale);//(x*(Model.scale/2))-(left*Model.scale);
+	return x;//((x-left)/Model.scale);//(x*(Model.scale/2))-(left*Model.scale);
 	//
 	//var dx = ((x-Model.contextCenterX));
 	//return Model.contextCenterX + dx;
@@ -368,7 +368,7 @@ function _fromRelX(x) {
 
 function _fromRelY(y) {
 	var top = (Model.contextCenterY - (Model.contextCenterY*Model.scale));
-	return ((y-top)/Model.scale);
+	return y;//((y-top)/Model.scale);
 }
 
 /**

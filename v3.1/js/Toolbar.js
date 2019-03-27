@@ -94,7 +94,8 @@ function Toolbar(loopy){
 		tooltip: "ZOOM IN",
 		callback: function() {
 			self.setTool("zoom");
-			Model.targetScale = Math.min(Model.targetScale + 0.25, 3);
+			Model.targetScale = Math.min(Model.targetScale + 0.25, 1);
+			Model.zoomOffset.initialZoom = Model.scale;
 		}
 	});
 
@@ -103,7 +104,8 @@ function Toolbar(loopy){
 		tooltip: "ZOOM OUT",
 		callback: function() {
 			self.setTool("zoom");
-			Model.targetScale = Math.max(Model.targetScale - 0.25, .25);
+			Model.targetScale = Math.max(Model.targetScale - 0.25, 0.25);
+			Model.zoomOffset.initialZoom = Model.scale;
 		}
 	});
 

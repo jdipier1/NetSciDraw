@@ -24,8 +24,8 @@ function Dragger(loopy){
 		var dragNode = loopy.model.getNodeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragNode){
 			self.dragging = dragNode;
-			self.offsetX = Mouse.x - dragNode.x;
-			self.offsetY = Mouse.y - dragNode.y;
+			self.offsetX = Mouse.canvasX - dragNode.x;
+			self.offsetY = Mouse.canvasY - dragNode.y;
 			loopy.sidebar.edit(dragNode); // and edit!
 			return;
 		}
@@ -34,8 +34,8 @@ function Dragger(loopy){
 		var dragLabel = loopy.model.getLabelByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragLabel){
 			self.dragging = dragLabel;
-			self.offsetX = Mouse.x - dragLabel.x;
-			self.offsetY = Mouse.y - dragLabel.y;
+			self.offsetX = Mouse.canvasX - dragLabel.x;
+			self.offsetY = Mouse.canvasY - dragLabel.y;
 			loopy.sidebar.edit(dragLabel); // and edit!
 			return;
 		}
@@ -44,8 +44,8 @@ function Dragger(loopy){
 		var dragEdge = loopy.model.getEdgeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(dragEdge){
 			self.dragging = dragEdge;
-			self.offsetX = Mouse.x - dragEdge.labelX;
-			self.offsetY = Mouse.y - dragEdge.labelY;
+			self.offsetX = Mouse.canvasX - dragEdge.labelX;
+			self.offsetY = Mouse.canvasY - dragEdge.labelY;
 			loopy.sidebar.edit(dragEdge); // and edit!
 			return;
 		}
@@ -69,9 +69,8 @@ function Dragger(loopy){
 			publish("model/changed");
 			
 			var node = self.dragging;
-			// TODO: This breaks when Model.scale != 1
-			node.x = (Mouse.x - self.offsetX);
-			node.y = (Mouse.y - self.offsetY);
+			node.x = (Mouse.canvasX - self.offsetX);
+			node.y = (Mouse.canvasY - self.offsetY);
 
 			// update coz visual glitches
 			loopy.model.update();
@@ -85,8 +84,8 @@ function Dragger(loopy){
 			publish("model/changed");
 
 			var edge = self.dragging;
-			var labelX = Mouse.x - self.offsetX;
-			var labelY = Mouse.y - self.offsetY;
+			var labelX = Mouse.canvasX - self.offsetX;
+			var labelY = Mouse.canvasY - self.offsetY;
 
 			if(edge.from!=edge.to){
 
@@ -134,8 +133,8 @@ function Dragger(loopy){
 			publish("model/changed");
 			
 			var label = self.dragging;
-			label.x = Mouse.x - self.offsetX;
-			label.y = Mouse.y - self.offsetY;
+			label.x = Mouse.canvasX - self.offsetX;
+			label.y = Mouse.canvasY - self.offsetY;
 
 			// update coz visual glitches
 			loopy.model.update();
@@ -144,8 +143,8 @@ function Dragger(loopy){
 
 		// Dragging canvas
 		else if (self.dragging == loopy.model) {
-			Model.x = Mouse.x - self.offsetX;
-			Model.y = Mouse.y - self.offsetY;
+			Model.xOffset = Mouse.x - self.offsetX;
+			Model.yOffset = Mouse.y - self.offsetY;
 			loopy.model.update();
 		}
 
@@ -160,7 +159,6 @@ function Dragger(loopy){
 		self.dragging = null;
 		self.offsetX = 0;
 		self.offsetY = 0;
-
 	});
 
 }
