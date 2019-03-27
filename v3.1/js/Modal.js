@@ -48,8 +48,8 @@ function Modal(loopy){
 	// PAGES! /////////
 	///////////////////
 
-
-	// Save as link
+/*
+// Save as link
 	(function(){
 		var page = new Page();
 		page.width = 500;
@@ -92,19 +92,19 @@ function Modal(loopy){
 		page.onshow = function(){
 
 			// Copy-able link
-			var link = loopy.saveToURL();
+			//var link = loopy.saveToURL();
 		
 			output.output(link);
 			output.dom.select();
 
 			// Chars left
-			var html = link.length+" / 2048 characters";
-			if(link.length>2048){
+			var html = 1+" / 2048 characters";
+			if(1>2048){
 				html += " - MAY BE TOO LONG FOR MOST BROWSERS";
 			}
 			chars.innerHTML = html;
-			chars.style.fontWeight = (link.length>2048) ? "bold" : "100";
-			chars.style.fontSize = (link.length>2048) ? "14px" : "15px";
+			chars.style.fontWeight = (1>2048) ? "bold" : "100";
+			chars.style.fontSize = (1>2048) ? "14px" : "15px";
 
 		};
 
@@ -112,24 +112,42 @@ function Modal(loopy){
 		self.addPage("save_link", page);
 	})();
 
-	// Save as image
+*/
+	
+	// Save to local
 	(function(){
 		var page = new Page();
 		page.width = 500;
 		page.height = 155;
 		page.addComponent(new ComponentHTML({
-			html: "save diagram as an image:"
+			html: "Saved!"
 		}));
-		var output = page.addComponent(new ComponentOutput({}));
 
 		page.onshow = function(){
 
-			//STUFF NEEDS TO GO HERE TO GET THIS TO WORK
-			
+			loopy.save();
 		};
 
 		// or, tweet it
-		self.addPage("save_image", page);
+		self.addPage("save_work", page);
+	})();
+
+	// Load
+	(function(){
+		var page = new Page();
+		page.width = 500;
+		page.height = 155;
+		page.addComponent(new ComponentHTML({
+			html: "Loaded!"
+		}));
+
+		page.onshow = function(){
+
+			loopy.load();
+		};
+
+		// or, tweet it
+		self.addPage("load_work", page);
 	})();
 
 	// Help

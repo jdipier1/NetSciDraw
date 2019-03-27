@@ -283,13 +283,12 @@ function Sidebar(loopy){
   			"}"+
 			"</style>"+
 
-			"<span class='button' onclick='publish(\"modal\",[\"save_link\"])'>Save Your Work!</span> <br><br>"+
-			"<span class='button' onclick='publish(\"modal\",[\"save_image\"])'>Save as Image!</span> <br><br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"save_work\"])'>Save Project!</span> <br><br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"load_work\"])'>Load Project</span> <br><br>"+
 			"<span class='button' onclick='publish(\"modal\",[\"help_button\"])'>Need Help?</span> <br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
-			"<hr/>"+ "<br>"+
 			"<style='font-size:1.4em'>Click the pencil icon and use your finger or mouse to draw<br><br>"+
 			
 			"Type in your drawings to organize your thoughts<br><br>"+

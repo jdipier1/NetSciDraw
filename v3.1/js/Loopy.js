@@ -149,29 +149,56 @@ function Loopy(config){
 		if(!self.embedded) self.dirty = true;
 	});
 
-	self.saveToURL = function(embed){
+	self.save = function(embed) {
 
-		// Create link
-		var dataString = self.model.serialize();
-		var uri = dataString; // encodeURIComponent(dataString);
-		var base = window.location.origin + window.location.pathname;
-		var historyLink = base+"?data="+uri;
-		var link;
-		if(embed){
-			link = base+"?embed=1&data="+uri;
-		}else{
-			link = historyLink;
+		// Only allows for one saved at a time
+		window.localStorage.clear();
+
+		window.localStorage.setItem('nodeNum', self.model.nodes.length);
+		window.localStorage.setItem('edgeNum', self.model.edges.length);
+		window.localStorage.setItem('labelNum', self.model.labels.length);
+
+		for(var i = 0; i < self.model.nodes.length; i++) {
+			var node = self.model.nodes[i];
+			node.newId = i;
+			window.localStorage.setItem('n'+i, i + ',' + node.x + ',' + node.y + ',' + node.width + ',' + node.height + ',' + node.hue + ',' + node.label + ',' + node.shape.id);
 		}
 
-		// NO LONGER DIRTY!
-		self.dirty = false;
+		for(var i = 0; i < self.model.edges.length; i++) {
+			var edge = self.model.edges[i];
+			window.localStorage.setItem('e'+i, edge.from.newId + ',' + edge.to.newId + ',' + edge.hues + ',' + edge.arc + ',' + edge.thickness + ',' + edge.strength + ',' + edge.rotation);
+		}
 
-		// Commented this out, idk why but it makes this function break
-		// PUSH TO HISTORY
-		//window.history.replaceState(null, null, historyLink);
+		for(var i = 0; i < self.model.labels.length; i++) {
+			var label = self.model.labels[i];
+			window.localStorage.setItem('l'+i, label.x + ',' + label.y + ',' + label.hue + ',' + label.text);
+		}
 
-		return link;
+		console.log("saved "+self.model.edges.length);
+	};
 
+	self.load = function(embed) {
+
+		var nodeNum = window.localStorage.getItem('nodeNum');
+		var edgeNum = window.localStorage.getItem('edgeNum');
+		var labelNum = window.localStorage.getItem('labelNum');
+
+		for(var i = 0; i < nodeNum; i++) {
+			var data = window.localStorage.getItem('n'+i).split(',');
+			self.model.loadNode(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+		}
+
+		for(var i = 0; i < edgeNum; i++) {
+			var data = window.localStorage.getItem('e'+i).split(',');
+			self.model.loadEdge(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
+		}
+
+		for(var i = 0; i < labelNum; i++) {
+			var data = window.localStorage.getItem('l'+i).split(',');
+			self.model.loadLabel(data[0], data[1], data[2], data[3]);
+		}
+
+		console.log('loaded')
 	};
 	
 	// "BLANK START" DATA:

@@ -118,7 +118,7 @@ Mouse.onPinchMove = function(e) {
 		e.touches[0].pageX - e.touches[1].pageX,
 		e.touches[0].pageY - e.touches[1].pageY);
 
-	Model.targetScale = Math.min(Math.max(Mouse.initPinchScale + ((Mouse.initPinchDist - dist)/Mouse.PINCH_SENSITIVITY), 0.25), 1);	
+	Model.targetScale = Math.min(Math.max(Mouse.initPinchScale - ((Mouse.initPinchDist - dist)/Mouse.PINCH_SENSITIVITY), 0.25), 1);	
 }
 
 Mouse.onPinchEnd = function(e) {

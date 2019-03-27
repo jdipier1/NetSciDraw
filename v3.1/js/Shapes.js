@@ -18,7 +18,9 @@ Shapes.CIRCLE = {
     drawText: function(ctx, node) {
         var size = Math.sqrt(4 * (node.width*node.width));
         _boundedText(ctx, node.label, 0, 0, size ,size, 0);
-    }
+    },
+
+    id: 0
 };
 
 Shapes.TRIANGLE = {
@@ -43,6 +45,8 @@ Shapes.TRIANGLE = {
             // TODO: Something that actually fits in the triangle
             _boundedText(ctx, node.label, 0, 64, node.width*2, node.height*2, 250);
         },
+
+        id: 1
 };
 
 Shapes.RECTANGLE = {
@@ -59,6 +63,8 @@ Shapes.RECTANGLE = {
     drawText: function(ctx, node) {
             _boundedText(ctx, node.label, 0, 0, node.width*2, node.height*2, 40);
         },
+
+        id: 2
 };
 
 // Todo
@@ -90,6 +96,8 @@ Shapes.STAR = {
     drawText: function(ctx, node) {
             _boundedText(ctx, node.label, 0, 0, node.width, node.height, 80);
         },
+
+        id: 3
 };
 
 Shapes.SPECIAL_HOUSE = {
@@ -144,6 +152,8 @@ Shapes.SPECIAL_HOUSE = {
     drawText: function(ctx, node) {
             _boundedText(ctx, node.label, 0, 0, node.width, node.height, 40);
         },
+
+        id: 4
 };
 
 Shapes.checkForSpecials = function(newNode, loopy) {
@@ -188,4 +198,16 @@ Shapes.createHouse = function(rect, tri, parent) {
     loopy.sidebar.edit(newNode);
     rect.kill();
     tri.kill();
+}
+
+Shapes.getShape = function(shape) {
+
+    switch(shape) {
+        case '1': return Shapes.TRIANGLE;
+        case '2': return Shapes.RECTANGLE;
+        case '3': return Shapes.STAR;
+        case '4': return Shapes.SPECIAL_HOUSE;
+    }
+
+    return Shapes.CIRCLE;
 }

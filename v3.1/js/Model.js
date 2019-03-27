@@ -426,6 +426,41 @@ function Model(loopy){
 
 	};
 
+	self.loadNode = function(id, x, y, width, height, hue, label, shape) {
+		console.log("ID:"+id);
+		self.addNode({
+			id: id,
+			x: x,
+			y: y,
+			label: label,
+			hue: hue,
+			width: width,
+			height: height,
+			shape: Shapes.getShape(shape)
+		});
+	}
+
+	self.loadEdge = function(from, to, hues, arc, thickness, strength, rotation) {
+		self.addEdge({
+			from: from,//self.getNodeById(from),
+			to: to,//self.getNodeById(to),
+			arc: arc,
+			thickness: thickness,
+			hues: hues,
+			strength: strength,
+			rotation: rotation
+		});
+	}
+
+	self.loadLabel = function(x, y, hue, label) {
+		self.addLabel({
+			x: x,
+			y: y,
+			hue: hue,
+			text: label
+		});
+	}
+
 	self.clear = function(){
 
 		// Just kill ALL nodes.
@@ -470,7 +505,7 @@ function Model(loopy){
 	};
 
 	// Click to edit!
-	subscribe("mouseclick",function(){
+	subscribe("mousedown",function(){
 
 		// ONLY WHEN EDITING (and NOT erase)
 		if(self.loopy.mode!=Loopy.MODE_EDIT) return;
