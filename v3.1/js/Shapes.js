@@ -16,7 +16,7 @@ Shapes.CIRCLE = {
     },
 
     drawText: function(ctx, node) {
-        var size = Math.sqrt(4 * (node.width*node.width));
+        var size = Math.sqrt(1.5 * (node.width*node.width));
         _boundedText(ctx, node.label, 0, 0, size ,size, 0);
     },
 
@@ -43,7 +43,7 @@ Shapes.TRIANGLE = {
 
     drawText: function(ctx, node) {
             // TODO: Something that actually fits in the triangle
-            _boundedText(ctx, node.label, 0, 64, node.width*2, node.height*2, 250);
+            _boundedTextTri(ctx, node.label, 0, 64, node.width*2, node.height*2, 250);
         },
 
         id: 1

@@ -114,40 +114,89 @@ function Modal(loopy){
 
 */
 	
-	// Save to local
+	// Save
 	(function(){
 		var page = new Page();
 		page.width = 500;
-		page.height = 155;
+		page.height = 125;
 		page.addComponent(new ComponentHTML({
-			html: "Saved!"
+			html: "Name your project:<br>"
 		}));
 
-		page.onshow = function(){
+		var input = document.createElement("INPUT"); 
+		input.type = "text";
+		
+		page.dom.appendChild(input);
 
-			loopy.save();
-		};
+		var button = document.createElement("BUTTON");
 
-		// or, tweet it
+		page.onshow = function(e) {
+			input.value = "my_nsd_project"
+			button.disabled = false;
+		}
+
+		// eugh
+		input.onkeydown = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.oninput = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.onpaste = function(event) {
+			button.disabled = (input.value == "");
+		}
+
+		var t = document.createTextNode("Save Project");
+		button.appendChild(t);
+		button.addEventListener("click", function() {
+			loopy.save(input.value);
+		});
+		page.dom.appendChild(button);
+
 		self.addPage("save_work", page);
+		
 	})();
 
-	// Load
+	// Save to image
 	(function(){
 		var page = new Page();
 		page.width = 500;
-		page.height = 155;
+		page.height = 125;
 		page.addComponent(new ComponentHTML({
-			html: "Loaded!"
+			html: "Save as image:<br>"
 		}));
 
-		page.onshow = function(){
+		var input = document.createElement("INPUT"); 
+		input.type = "text";
+		page.dom.appendChild(input);
 
-			loopy.load();
-		};
+		var button = document.createElement("BUTTON");
 
-		// or, tweet it
-		self.addPage("load_work", page);
+		page.onshow = function(e) {
+			input.value = "my_nsd_image"
+			button.disabled = false;
+		}
+
+		// eugh
+		input.onkeydown = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.oninput = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.onpaste = function(event) {
+			button.disabled = (input.value == "");
+		}
+
+		var t = document.createTextNode("Save Project");
+		button.appendChild(t);
+		button.addEventListener("click", function() {
+			FileIO.saveCanvas(input.value);
+		});
+		page.dom.appendChild(button);
+
+		self.addPage("save_img", page);
+		
 	})();
 
 	// Help

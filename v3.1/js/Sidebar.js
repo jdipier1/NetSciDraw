@@ -77,8 +77,8 @@ function Sidebar(loopy){
 			label: "Decrease Size",
 			//label: "delete circle",
 			onclick: function(node){
-				node.width -= 10;
-				node.height -= 10;
+				if (node.width > 40) node.width -= 10;
+				if (node.height > 40) node.height -= 10;
 			}
 		}));
 
@@ -282,10 +282,18 @@ function Sidebar(loopy){
   			"color: black;"+
   			"}"+
 			"</style>"+
+			
+			// File open/save dialogs
+			"<input id='file_input' type='file' name='name' style='left: -999999; display: none;' accept=\".nsd\">"+
 
-			"<span class='button' onclick='publish(\"modal\",[\"save_work\"])'>Save Project!</span> <br><br>"+
-			"<span class='button' onclick='publish(\"modal\",[\"load_work\"])'>Load Project</span> <br><br>"+
-			"<span class='button' onclick='publish(\"modal\",[\"help_button\"])'>Need Help?</span> <br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"save_work\"])'>Save Project</span> <br><br>"+
+			"<span class='button' onclick='loopy.model.pictureBounds(true)'>Save As Image</span> <br><br>"+
+			//"<span class='button' onclick='publish(\"modal\",[\"load_work\"]);'>Open Project</span><br><br> "+
+			"<span class='button' onclick='FileIO.emptyFileCache(); loopy.load();'>Open Project</span><br><br> "+
+			
+			"<span class='button' onclick='loopy.model.pictureBounds(false)'>Recenter</span> <br><br>"+
+			//"<span class='button' onclick='publish(\"modal\",[\"load_work\"])'>Open Project</span> <br><br>"+
+			"<span class='button' onclick='publish(\"modal\",[\"help_button\"])'>Need Help?</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"embed\"])'>embed in your website</span> <br><br>"+
 //			"<span class='mini_button' onclick='publish(\"modal\",[\"save_gif\"])'>make a GIF using LICEcap</span> <br><br>"+
 			"<br>"+
@@ -300,6 +308,8 @@ function Sidebar(loopy){
 			//"NetSciDraw</a> is "+
 			//"made by Adam Lindeman, Joe Di Piero, Thomas Mayer, Justin Rowe, Chris Bachman and Jay Heller, with supervision of Hiroki Sayama" +
 			"<br>"
+
+			
 		}));
 		self.addPage("Edit", page);
 	})();

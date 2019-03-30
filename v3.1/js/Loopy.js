@@ -32,6 +32,8 @@ function Loopy(config){
 	self.offsetY = 0;
 	self.offsetScale = 1;
 
+	Audio.init();
+
 	// Mouse
 	Mouse.init(document.getElementById("canvasses")); // TODO: ugly fix, ew
 	
@@ -144,63 +146,108 @@ function Loopy(config){
 
 	self.dirty = false;
 
+	
+
 	// YOU'RE A DIRTY BOY
 	subscribe("model/changed", function(){
 		if(!self.embedded) self.dirty = true;
 	});
 
-	self.save = function(embed) {
+	self.save = function(name) {
+		FileIO.writeFile(name);
 
-		// Only allows for one saved at a time
-		window.localStorage.clear();
-
-		window.localStorage.setItem('nodeNum', self.model.nodes.length);
-		window.localStorage.setItem('edgeNum', self.model.edges.length);
-		window.localStorage.setItem('labelNum', self.model.labels.length);
+		FileIO.write('nodeNum', self.model.nodes.length);
+		FileIO.write('edgeNum', self.model.edges.length);
+		FileIO.write('labelNum', self.model.labels.length);
 
 		for(var i = 0; i < self.model.nodes.length; i++) {
 			var node = self.model.nodes[i];
 			node.newId = i;
-			window.localStorage.setItem('n'+i, i + ',' + node.x + ',' + node.y + ',' + node.width + ',' + node.height + ',' + node.hue + ',' + node.label + ',' + node.shape.id);
+			FileIO.write('n'+i, i + ',' + node.x + ',' + node.y + ',' + node.width + ',' + node.height + ',' + node.hue + ',' + node.label + ',' + node.shape.id);
 		}
 
 		for(var i = 0; i < self.model.edges.length; i++) {
 			var edge = self.model.edges[i];
-			window.localStorage.setItem('e'+i, edge.from.newId + ',' + edge.to.newId + ',' + edge.hues + ',' + edge.arc + ',' + edge.thickness + ',' + edge.strength + ',' + edge.rotation);
+			FileIO.write('e'+i, edge.from.newId + ',' + edge.to.newId + ',' + edge.hues + ',' + edge.arc + ',' + edge.thickness + ',' + edge.strength + ',' + edge.rotation);
 		}
 
 		for(var i = 0; i < self.model.labels.length; i++) {
 			var label = self.model.labels[i];
-			window.localStorage.setItem('l'+i, label.x + ',' + label.y + ',' + label.hue + ',' + label.text);
+			FileIO.write('l'+i, label.x + ',' + label.y + ',' + label.hues + ',' + label.text + ',' + label.fontSize);
 		}
 
-		console.log("saved "+self.model.edges.length);
+		FileIO.saveFile();
 	};
 
-	self.load = function(embed) {
+	self.load = function() {
+		FileIO.openFile();
+		window.addEventListener('readevent', function(event) {
+			var nodeNum = FileIO.read('nodeNum');
+			var edgeNum = FileIO.read('edgeNum');
+			var labelNum = FileIO.read('labelNum');
 
-		var nodeNum = window.localStorage.getItem('nodeNum');
-		var edgeNum = window.localStorage.getItem('edgeNum');
-		var labelNum = window.localStorage.getItem('labelNum');
+			// We don't just create the nodes/edges/labels in the first three loops, just in case the file loaded is malformatted
+			// This ensures that we don't wipe away the previous work and load garbage
+			var nodes = [];
+			var edges = [];
+			var labels = [];
 
-		for(var i = 0; i < nodeNum; i++) {
-			var data = window.localStorage.getItem('n'+i).split(',');
-			self.model.loadNode(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-		}
+			for(var i = 0; i < nodeNum; i++) {
+				var data = FileIO.read('n'+i).split(',');
+				if (data == "MISSING_DATA") {
+					break;
+				}
+				nodes.push(data);
+			}
 
-		for(var i = 0; i < edgeNum; i++) {
-			var data = window.localStorage.getItem('e'+i).split(',');
-			self.model.loadEdge(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
-		}
+			if (nodes.length != nodeNum) {
+				return;
+			}
 
-		for(var i = 0; i < labelNum; i++) {
-			var data = window.localStorage.getItem('l'+i).split(',');
-			self.model.loadLabel(data[0], data[1], data[2], data[3]);
-		}
+			for(var i = 0; i < edgeNum; i++) {
+				var data = FileIO.read('e'+i).split(',');
+				if (data == "MISSING_DATA") {
+					break;
+				}
+				edges.push(data);
+			}
 
-		console.log('loaded')
+			if (edges.length != edgeNum) {
+				return;
+			}
+
+			for(var i = 0; i < labelNum; i++) {
+				var data = FileIO.read('l'+i).split(',');
+				if (data == "MISSING_DATA") {
+					break;
+				}
+				labels.push(data);
+			}
+
+			if (labels.length != labelNum) {
+				return;
+			}
+
+			self.model.clear();
+
+			for(var i = 0; i < nodeNum; i++) {
+				var data = nodes[i];
+				self.model.loadNode(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+			}
+
+			for(var i = 0; i < edgeNum; i++) {
+				var data = edges[i];
+				self.model.loadEdge(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
+			}
+
+			for(var i = 0; i < labelNum; i++) {
+				var data = labels[i];
+				self.model.loadLabel(data[0], data[1], data[2], data[3], data[4]);
+			}
+			self.reading = false;
+		}, false);
 	};
-	
+
 	// "BLANK START" DATA:
 	var _blankData = "[[[1,405,2,1,%22Net%22,0],[2,405,382,1,%22Draw%2520%22,4],[3,800,200,1,%22Sci%2520%22,2]],[[2,1,94,-1,11],[1,3,140,1,7],[3,2,120,1,9]],[[550,210,%22Welcome%2520to%2520NetSciDraw!%2520Need%2520any%250Aideas%253F%2520how%2520about%253A%250A%250A%25E3%2583%25BBfamily trees%250A%25E3%2583%25BBchemical reactions%250A%25E3%2583%25BBgreatest common factors%250A%25E3%2583%25BBfood chains%250A%25E3%2583%25BBwater cycle%250A%25E3%2583%25BBcritical path method%22]],2%5D";
 

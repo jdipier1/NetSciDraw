@@ -12,9 +12,17 @@ Model.height = 1;
 Model.x = 0;
 Model.y = 0;
 
+
+
 // This is the translation of the model (ignoring scale offset)
 Model.xOffset = 0;
 Model.yOffset = 0;
+Model.xOffsetTarget = 0;
+Model.yOffsetTarget = 0;
+Model.smoothTranslate = false;
+
+Model.bgColor = "#FFFFFF";
+Model.takingPicture = false;
 
 Model.zoomOffset = {x: 0, y: 0, initialZoom: 1.0};
 
@@ -62,12 +70,14 @@ function Model(loopy){
 
 		// Model's been changed!
 		publish("model/changed");
+		Audio.play('plop');
 
 		// Add Node
 		var node = new Node(self,config);
 		self.nodeByID[node.id] = node;
 		self.nodes.push(node);
 		self.update();
+
 		return node;
 
 	};
@@ -80,6 +90,8 @@ function Model(loopy){
 
 		// Remove from array
 		self.nodes.splice(self.nodes.indexOf(node),1);
+
+		Audio.play('wipe');
 
 		// Remove from object
 		delete self.nodeByID[node.id];
@@ -95,6 +107,43 @@ function Model(loopy){
 		
 	};
 
+	self.pictureBounds = function(takePicture) {
+		var pb = {
+			x1:0,
+			y1:0,
+			x2:0,
+			y2:0
+		}
+
+		Model.takingPicture = takePicture;
+
+		for(var i = 0; i < self.nodes.length; i++) {
+			var n = self.nodes[i];
+			if (n) {
+				pb.x1 = Math.min(pb.x1, n.x - n.width);
+				pb.y1 = Math.min(pb.y1, n.y - n.height);
+				pb.x2 = Math.max(pb.x2, n.x + n.width);
+				pb.y2 = Math.max(pb.y2, n.y + n.height);
+			}
+		}
+
+		/*for(var i = 0; i < self.labels.length; i++) {
+			var n = self.labels[i];
+			var width = n.fontSize * n.text;
+			if (n) {
+				pb.x1 = Math.min(pb.x1, n.x - width);
+				pb.y1 = Math.min(pb.y1, n.y - n.fontSize*4);
+				pb.x2 = Math.max(pb.x2, n.x + width);
+				pb.y2 = Math.max(pb.y2, n.y + n.fontSize*4);
+			}
+		}*/
+
+		Model.xOffsetTarget = -pb.x1/2;// - (Model.contextCenterX*0.2*Model.targetScale);
+		Model.yOffsetTarget = -pb.y1/2;// - (Model.contextCenterX*0.2*Model.targetScale);
+		Model.smoothTranslate = true;
+		Model.targetScale = Math.max(Math.min((Model.contextCenterX*1.75)/(pb.x2-pb.x1), 3), 0.01);
+	}
+
 
 	///////////////////
 	// EDGES //////////
@@ -108,7 +157,7 @@ function Model(loopy){
 
 		// Model's been changed!
 		publish("model/changed");
-
+		Audio.play('drop');
 		// Add Edge
 		var edge = new Edge(self,config);
 		self.edges.push(edge);
@@ -149,7 +198,7 @@ function Model(loopy){
 
 		// Model's been changed!
 		publish("model/changed");
-
+		Audio.play('plop');
 		// Add label
 		var label = new Label(self,config);
 		self.labels.push(label);
@@ -231,13 +280,35 @@ function Model(loopy){
 
 	self.draw = function(){
 
+		if (Model.smoothTranslate && (Model.xOffsetTarget != Model.xOffset || Model.yOffsetTarget != Model.yOffset)) {
+			Model.xOffset = _lerp(Model.xOffset, Model.xOffsetTarget, 0.2);
+			Model.yOffset = _lerp(Model.yOffset, Model.yOffsetTarget, 0.2);
+			loopy.toolbar.disableButtons();
+			Model.zoomOffset.x = 0;
+			Model.zoomOffset.y = 0;
+
+			if (Math.abs(Model.xOffsetTarget - Model.xOffset) < 0.1) {
+				Model.xOffset = Model.xOffsetTarget;
+			}
+			if (Math.abs(Model.yOffsetTarget - Model.yOffset) < 0.1) {
+				Model.yOffset = Model.yOffsetTarget;
+			}
+		} else {
+			Model.smoothTranslate = false;
+			if (Model.takingPicture) {
+				publish("modal",["save_img"]);
+				Model.takingPicture = false;
+			}
+		}
+
 		// Also only draw if last updated...
 		if(!_canvasDirty) return;
 		_canvasDirty = false;
 
 		// Clear!
 		//ctx.clearRect(0,0,self.canvas.width,self.canvas.height);
-		ctx.clearRect(0,0,self.canvas.width,self.canvas.height);
+		ctx.fillStyle = Model.bgColor;
+		ctx.fillRect(0,0,self.canvas.width,self.canvas.height);
 		// Translate
 		ctx.save();
 
@@ -409,6 +480,7 @@ function Model(loopy){
 			};
 			if(edge[4]) edgeConfig.rotation=edge[4];
 			self.addEdge(edgeConfig);
+			
 		}
 
 		// Labels
@@ -448,26 +520,33 @@ function Model(loopy){
 			thickness: thickness,
 			hues: hues,
 			strength: strength,
-			rotation: rotation
+			//rotation: rotation
 		});
 	}
 
-	self.loadLabel = function(x, y, hue, label) {
+	self.loadLabel = function(x, y, hues, label, fontSize) {
 		self.addLabel({
 			x: x,
 			y: y,
-			hue: hue,
-			text: label
+			hues: hues,
+			text: label,
+			fontSize: fontSize
 		});
 	}
 
 	self.clear = function(){
 
-		// Just kill ALL nodes.
 		while(self.nodes.length>0){
 			self.nodes[0].kill();
 		}
 
+		while(self.edges.length>0){
+			self.edges[0].kill();
+		}
+
+		while(self.labels.length>0){
+			self.labels[0].kill();
+		}
 	};
 
 
@@ -512,21 +591,21 @@ function Model(loopy){
 		if(self.loopy.tool==Loopy.TOOL_ERASE) return;
 
 		// Did you click on a node? If so, edit THAT node.
-		var clickedNode = self.getNodeByPoint(Mouse.x, Mouse.y);
+		var clickedNode = self.getNodeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(clickedNode){
 			loopy.sidebar.edit(clickedNode);
 			return;
 		}
 
 		// Did you click on a label? If so, edit THAT label.
-		var clickedLabel = self.getLabelByPoint(Mouse.x, Mouse.y);
+		var clickedLabel = self.getLabelByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(clickedLabel){
 			loopy.sidebar.edit(clickedLabel);
 			return;
 		}
 
 		// Did you click on an edge label? If so, edit THAT edge.
-		var clickedEdge = self.getEdgeByPoint(Mouse.x, Mouse.y);
+		var clickedEdge = self.getEdgeByPoint(Mouse.canvasX, Mouse.canvasY);
 		if(clickedEdge){
 			loopy.sidebar.edit(clickedEdge);
 			return;
@@ -545,6 +624,7 @@ function Model(loopy){
 
 	// Centering & Scaling
 	self.getBounds = function(){
+
 
 		// If no nodes & no labels, forget it.
 		if(self.nodes.length==0 && self.labels.length==0) return;
