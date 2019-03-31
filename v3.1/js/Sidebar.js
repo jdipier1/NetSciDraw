@@ -258,7 +258,7 @@ function Sidebar(loopy){
 			html: ""+
 
 			"<b style='font-size:2.2em'>NetSciDraw</b><br>A tool for thinking in systems<br><br>"+
-			"<img src = '../NSD.png' width='195' height='90' border='2'></img>"+
+			"<img src = '../NSD.png' width='195' height='90' border='0'></img>"+
 			"<br>"+
 			"<br>"+
 			"<hr/>"+ "<br>"+
