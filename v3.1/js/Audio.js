@@ -5,27 +5,30 @@ Audio.init = function() {
     Audio.plop = new Audio("css/sfx/plop.mp3");
 }
 
-    
-
 Audio.play = function(str) {
+    Audio.playAtVolume(str, 1.0);
+}
+
+Audio.playAtVolume = function(str, vol) {
+    var audio = null;
     if (str == 'drop') {
-        Audio.drop.pause();
-        Audio.drop.currentTime = 0;
-        Audio.drop.play();
+        audio = Audio.drop;
     }
     else if (str == 'wipe') {
-        Audio.wipe.pause();
-        Audio.wipe.currentTime = 0;
-        Audio.wipe.play();
+        audio = Audio.wipe;
     }
     else if (str == 'edit') {
-        Audio.edit.pause();
-        Audio.edit.currentTime = 0;
-        Audio.edit.play();
+        audio = Audio.edit;
     }
     else if (str == 'plop') {
-        Audio.plop.pause();
-        Audio.plop.currentTime = 0;
-        Audio.plop.play();
+        audio = Audio.plop;
+    }
+
+    if (audio != null) {
+        audio.volume = vol;
+        audio.pause();
+        audio.currentTime = 0;
+        audio.play();
+        audio.volume = 1.0;
     }
 }

@@ -72,6 +72,7 @@ function Loopy(config){
 
 	self.init = function(){
 		self.loadFromURL(); // try it.
+		Node._UID = 3;
 	};
 
 	///////////////////
@@ -180,7 +181,6 @@ function Loopy(config){
 	};
 
 	self.load = function() {
-		FileIO.openFile();
 		window.addEventListener('readevent', function(event) {
 			var nodeNum = FileIO.read('nodeNum');
 			var edgeNum = FileIO.read('edgeNum');
@@ -255,7 +255,7 @@ function Loopy(config){
 		var data = _getParameterByName("data");
 		if(!data) data=decodeURIComponent(_blankData);
 		self.model.deserialize(data);
-	}; 
+	};
 
 
 	///////////////////////////

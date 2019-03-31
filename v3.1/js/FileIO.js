@@ -105,6 +105,17 @@ FileIO.openFile = function() {
     }
 }
 
+// This function does no error checking, and should only be used with expected data
+FileIO.readInternalData = function(data) {
+    var lines = data.split("\n");
+    for(var i = 0; i < lines.length; i++) {
+        var keyVal = lines[i].split("\t");
+        var value = keyVal[1].replace(new RegExp("\b", 'g'), "\n");
+        FileIO.readData.push(keyVal[0]);
+        FileIO.readData.push(value);
+    }
+}
+
 FileIO.read = function(key) {
     console.log("READ: "+FileIO.readData.length);
     for(var i = 0; i < FileIO.readData.length; i += 2) {

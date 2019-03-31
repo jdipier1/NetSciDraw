@@ -8,6 +8,9 @@ Mouse.initPinchDist = -1;
 Mouse.initPinchScale = -1;
 Mouse.PINCH_SENSITIVITY = 256.0;
 
+Mouse.dx = 0;
+Mouse.dy = 0;
+
 Mouse.init = function(target){
 
 	// Events!
@@ -51,6 +54,8 @@ Mouse.init = function(target){
 		var my = event.y*s + ty;
 
 		// Mouse!
+		Mouse.dx = mx-Mouse.x;
+		Mouse.dy = my-Mouse.y;
 		Mouse.x = mx;
 		Mouse.y = my;
 

@@ -313,5 +313,6 @@ function Node(model, config) {
 Node._UID = 0;
 Node._getUID = function(){
 	Node._UID++;
+	console.log(Node._UID)
 	return Node._UID;
 };

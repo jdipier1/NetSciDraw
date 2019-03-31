@@ -289,7 +289,7 @@ function Sidebar(loopy){
 			"<span class='button' onclick='publish(\"modal\",[\"save_work\"])'>Save Project</span> <br><br>"+
 			"<span class='button' onclick='loopy.model.pictureBounds(true)'>Save As Image</span> <br><br>"+
 			//"<span class='button' onclick='publish(\"modal\",[\"load_work\"]);'>Open Project</span><br><br> "+
-			"<span class='button' onclick='FileIO.emptyFileCache(); loopy.load();'>Open Project</span><br><br> "+
+			"<span class='button' onclick='FileIO.emptyFileCache(); FileIO.openFile(); loopy.load();'>Open Project</span><br><br> "+
 			
 			"<span class='button' onclick='loopy.model.pictureBounds(false)'>Recenter</span> <br><br>"+
 			//"<span class='button' onclick='publish(\"modal\",[\"load_work\"])'>Open Project</span> <br><br>"+

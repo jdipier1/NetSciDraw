@@ -91,8 +91,6 @@ function Model(loopy){
 		// Remove from array
 		self.nodes.splice(self.nodes.indexOf(node),1);
 
-		Audio.play('wipe');
-
 		// Remove from object
 		delete self.nodeByID[node.id];
 
