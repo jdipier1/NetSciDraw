@@ -183,7 +183,7 @@ function Ink(loopy){
 		if(!endNode) endNode=loopy.model.getNodeByPoint(endPoint.x, endPoint.y, 40); // try again with buffer
 
 		// EDGE: started AND ended in nodes
-		if(startNode && endNode){
+		if(startNode && startNode != undefined && endNode && endNode != undefined){
 
 			// Config!
 			var edgeConfig = {

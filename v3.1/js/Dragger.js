@@ -19,6 +19,7 @@ function Dragger(loopy){
 		// ONLY WHEN EDITING w DRAG
 		if(self.loopy.mode!=Loopy.MODE_EDIT) return;
 		if(self.loopy.tool!=Loopy.TOOL_DRAG) return;
+		if (Model.smoothTranslate) return;
 
 		// Any node under here? If so, start dragging!
 		var dragNode = loopy.model.getNodeByPoint(Mouse.canvasX, Mouse.canvasY);

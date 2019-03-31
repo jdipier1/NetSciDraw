@@ -429,3 +429,53 @@ function _boundedText(ctx, str, x, y, width, height, padding) {
 	}
 	ctx.fillText(strNew, x, y-yOffset);
 }
+
+function _boundedTextTri(ctx, str, x, y, width, height, padding) {
+	var w = 0;
+	var numBreaks = 0;
+	var hApprox = 30; // Approximate height
+	var strNew = "";
+	var strings = [];
+	var yOffset = 0;
+
+	for(var i = 0; i < str.length; i++) {
+		var increase = (width/2) + ((numBreaks+5)*((width/height)*hApprox));
+
+		if (w+550 > increase+padding) {
+			if ((hApprox * numBreaks) + (hApprox) > height-padding) {
+				var targetLen = ctx.measureText("...").width;
+				var numCharsToRemove = 1;
+				while(true) {
+					if (strNew.length < numCharsToRemove) {
+						numCharsToRemove = 0
+						break;
+					}
+
+					var chop = ctx.measureText(strNew.substring(0, strNew.length-numCharsToRemove)).width;
+					if (chop >= targetLen) {
+						break;
+					}
+
+					numCharsToRemove++;
+				}
+				strNew = strNew.substring(0, strNew.length-numCharsToRemove);
+				strNew += "...";
+				break;
+			}
+
+			strings.push(strNew);
+
+			numBreaks++;
+			strNew = "";
+			yOffset += hApprox/2;
+		}
+
+		strNew += str.charAt(i);
+		w = ctx.measureText(strNew).width;
+	}
+
+	for(var i = 0; i < strings.length; i++) {
+		ctx.fillText(strings[i], x, (y+(i*hApprox))-yOffset);
+	}
+	ctx.fillText(strNew, x, y+(strings.length*hApprox)-yOffset);
+}

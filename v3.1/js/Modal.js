@@ -48,8 +48,8 @@ function Modal(loopy){
 	// PAGES! /////////
 	///////////////////
 
-
-	// Save as link
+/*
+// Save as link
 	(function(){
 		var page = new Page();
 		page.width = 500;
@@ -92,19 +92,19 @@ function Modal(loopy){
 		page.onshow = function(){
 
 			// Copy-able link
-			var link = loopy.saveToURL();
+			//var link = loopy.saveToURL();
 		
 			output.output(link);
 			output.dom.select();
 
 			// Chars left
-			var html = link.length+" / 2048 characters";
-			if(link.length>2048){
+			var html = 1+" / 2048 characters";
+			if(1>2048){
 				html += " - MAY BE TOO LONG FOR MOST BROWSERS";
 			}
 			chars.innerHTML = html;
-			chars.style.fontWeight = (link.length>2048) ? "bold" : "100";
-			chars.style.fontSize = (link.length>2048) ? "14px" : "15px";
+			chars.style.fontWeight = (1>2048) ? "bold" : "100";
+			chars.style.fontSize = (1>2048) ? "14px" : "15px";
 
 		};
 
@@ -112,24 +112,91 @@ function Modal(loopy){
 		self.addPage("save_link", page);
 	})();
 
-	// Save as image
+*/
+	
+	// Save
 	(function(){
 		var page = new Page();
 		page.width = 500;
-		page.height = 155;
+		page.height = 125;
 		page.addComponent(new ComponentHTML({
-			html: "save diagram as an image:"
+			html: "Name your project:<br>"
 		}));
-		var output = page.addComponent(new ComponentOutput({}));
 
-		page.onshow = function(){
+		var input = document.createElement("INPUT"); 
+		input.type = "text";
+		
+		page.dom.appendChild(input);
 
-			//STUFF NEEDS TO GO HERE TO GET THIS TO WORK
-			
-		};
+		var button = document.createElement("BUTTON");
 
-		// or, tweet it
-		self.addPage("save_image", page);
+		page.onshow = function(e) {
+			input.value = "my_nsd_project"
+			button.disabled = false;
+		}
+
+		// eugh
+		input.onkeydown = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.oninput = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.onpaste = function(event) {
+			button.disabled = (input.value == "");
+		}
+
+		var t = document.createTextNode("Save Project");
+		button.appendChild(t);
+		button.addEventListener("click", function() {
+			loopy.save(input.value);
+		});
+		page.dom.appendChild(button);
+
+		self.addPage("save_work", page);
+		
+	})();
+
+	// Save to image
+	(function(){
+		var page = new Page();
+		page.width = 500;
+		page.height = 125;
+		page.addComponent(new ComponentHTML({
+			html: "Save as image:<br>"
+		}));
+
+		var input = document.createElement("INPUT"); 
+		input.type = "text";
+		page.dom.appendChild(input);
+
+		var button = document.createElement("BUTTON");
+
+		page.onshow = function(e) {
+			input.value = "my_nsd_image"
+			button.disabled = false;
+		}
+
+		// eugh
+		input.onkeydown = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.oninput = function(event) {
+			button.disabled = (input.value == "");
+		}
+		input.onpaste = function(event) {
+			button.disabled = (input.value == "");
+		}
+
+		var t = document.createTextNode("Save Project");
+		button.appendChild(t);
+		button.addEventListener("click", function() {
+			FileIO.saveCanvas(input.value);
+		});
+		page.dom.appendChild(button);
+
+		self.addPage("save_img", page);
+		
 	})();
 
 	// Help

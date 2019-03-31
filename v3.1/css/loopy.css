@@ -16,7 +16,7 @@ canvas{
 #canvasses{
 	position:absolute;
 	top:0; left:0;
-	width: calc(100% - 250px);
+	width: calc(100% - 18%);
 	height: 100%;
 }
 #canvasses[fullscreen=yes]{
@@ -133,6 +133,9 @@ div[big=yes] .play_button_label{
 	border: 2px solid #FFFFFF; /* put #888 to get back to original color */
 	background-color: #FFFFFF; /* put #999 to get back to original color */
 }
+.toolbar_button[isDisabled=yes]{
+	background-color: #648996;
+}
 
 /**********
  SIDEBAR 
@@ -141,7 +144,7 @@ div[big=yes] .play_button_label{
 #sidebar{
 	position: absolute;
 	top:0; right:0;
-	width: 250px;
+	width: 18%;
 	height: 100%;
 	background: #ADD8E6; /* put #ddd to get back to original color */
 
