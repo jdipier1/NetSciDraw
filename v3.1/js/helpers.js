@@ -425,13 +425,16 @@ function _boundedText(ctx, str, x, y, width, height, padding) {
 	}
 
 	for(var i = 0; i < strings.length; i++) {
-		ctx.fillText(strings[i], x, (y-((i+1)*hApprox))-yOffset);
+		ctx.fillText(strings[i], x, (y+yOffset)+((i+1)*hApprox) );
 	}
-	ctx.fillText(strNew, x, y-yOffset);
+	ctx.fillText(strNew, x, y-yOffset+hApprox);
 }
 
+// Uncomment for text that shapes up to a triangle
 function _boundedTextTri(ctx, str, x, y, width, height, padding) {
-	var w = 0;
+	var scale = width/height/1.5;
+	_boundedText(ctx,str,x,y,width*scale,height*scale,padding);
+	/*var w = 0;
 	var numBreaks = 0;
 	var hApprox = 30; // Approximate height
 	var strNew = "";
@@ -477,5 +480,5 @@ function _boundedTextTri(ctx, str, x, y, width, height, padding) {
 	for(var i = 0; i < strings.length; i++) {
 		ctx.fillText(strings[i], x, (y+(i*hApprox))-yOffset);
 	}
-	ctx.fillText(strNew, x, y+(strings.length*hApprox)-yOffset);
+	ctx.fillText(strNew, x, y+(strings.length*hApprox)-yOffset);*/
 }
